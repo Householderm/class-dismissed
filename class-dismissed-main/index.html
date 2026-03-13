@@ -132,8 +132,7 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
       <h3>Windows App</h3>
       <p class="dlc-sub">Windows 10/11 &middot; 64-bit &middot; Desktop shortcut + Start Menu</p>
       <div class="dlc-fmt">.exe installer &middot; ~70 MB</div>
-      <a href="ClassDismissed-Setup-1.0.0.exe" download class="btn b-win">⬇ Download for Windows</a>
-      <a href="ClassDismissed-ElectronSource.zip" download class="btn b-src">📦 Build from Source</a>
+      <a href="https://github.com/Householderm/class-dismissed/releases/download/v1.0.0/Class.Dismissed.Setup.1.0.0.exe" class="btn b-win">⬇ Download for Windows</a>
       <p class="dl-note">Build with Electron — see instructions below</p>
     </div>
     <div class="dlc">
@@ -141,9 +140,9 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
       <h3>Mac App</h3>
       <p class="dlc-sub">macOS 11+ &middot; Intel &amp; Apple Silicon &middot; Standard .dmg</p>
       <div class="dlc-fmt">.dmg installer &middot; ~80 MB</div>
-      <a href="ClassDismissed-1.0.0.dmg" download class="btn b-mac">⬇ Download for Mac</a>
-      <a href="ClassDismissed-ElectronSource.zip" download class="btn b-src">📦 Build from Source</a>
-      <p class="dl-note">Build with Electron — see instructions below</p>
+      <a href="https://github.com/Householderm/class-dismissed/releases/download/v1.0.0/Class.Dismissed-1.0.0.dmg" class="btn b-mac">⬇ Download for Mac (Intel)</a>
+      <a href="https://github.com/Householderm/class-dismissed/releases/download/v1.0.0/Class.Dismissed-1.0.0-arm64.dmg" class="btn b-mac" style="margin-top:6px">⬇ Download for Mac (Apple Silicon)</a>
+      <p class="dl-note">M1/M2/M3/M4 Macs use Apple Silicon</p>
     </div>
   </div>
 
@@ -200,7 +199,6 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
       <button class="tb act" onclick="showTab(this,'t-html')">🌐 Browser (HTML)</button>
       <button class="tb" onclick="showTab(this,'t-win')">🪟 Windows App</button>
       <button class="tb" onclick="showTab(this,'t-mac')">🍎 Mac App</button>
-      <button class="tb" onclick="showTab(this,'t-build')">📦 Build from Source</button>
     </div>
 
     <div class="tp act" id="t-html">
@@ -223,7 +221,7 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
     <div class="tp" id="t-win">
       <div class="step-g">
         <div class="sc"><h4>Install on Windows</h4>
-          <div class="sr"><div class="sn">1</div><div class="st2">Download <code>ClassDismissed-Setup-1.0.0.exe</code> using the Windows button above.</div></div>
+          <div class="sr"><div class="sn">1</div><div class="st2">Download <code>Class.Dismissed.Setup.1.0.0.exe</code> using the Windows button above.</div></div>
           <div class="sr"><div class="sn">2</div><div class="st2">Double-click the installer. If SmartScreen appears, click <strong>"More info" → "Run anyway"</strong>.</div></div>
           <div class="sr"><div class="sn">3</div><div class="st2">Choose install location, click <strong>Install</strong>. Desktop shortcut and Start Menu entry created automatically.</div></div>
           <div class="sr"><div class="sn">4</div><div class="st2">Launch from Desktop or Start Menu. Works fully offline.</div></div>
@@ -234,9 +232,6 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
           <div class="sr"><div class="sn">✓</div><div class="st2"><strong>RAM:</strong> 4 GB minimum</div></div>
           <div class="sr"><div class="sn">✓</div><div class="st2"><strong>Disk:</strong> ~200 MB free space</div></div>
           <div class="sr"><div class="sn">✓</div><div class="st2"><strong>Internet:</strong> Not required — fully offline</div></div>
-          <div style="margin-top:16px;text-align:center">
-            <a href="ClassDismissed-ElectronSource.zip" download class="btn b-gold" style="max-width:280px;margin:0 auto;display:inline-flex">📦 Get Source to Build .exe</a>
-          </div>
         </div>
       </div>
     </div>
@@ -244,7 +239,7 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
     <div class="tp" id="t-mac">
       <div class="step-g">
         <div class="sc"><h4>Install on Mac</h4>
-          <div class="sr"><div class="sn">1</div><div class="st2">Download <code>ClassDismissed-1.0.0.dmg</code> using the Mac button above.</div></div>
+          <div class="sr"><div class="sn">1</div><div class="st2">Download <code>Class.Dismissed-1.0.0.dmg</code> (Intel) or <code>Class.Dismissed-1.0.0-arm64.dmg</code> (Apple Silicon M1/M2/M3/M4) using the Mac buttons above.</div></div>
           <div class="sr"><div class="sn">2</div><div class="st2">Double-click the .dmg. Drag <strong>Class Dismissed</strong> into your <strong>Applications</strong> folder.</div></div>
           <div class="sr"><div class="sn">3</div><div class="st2">First launch: right-click the app → <strong>Open</strong> → click <strong>Open</strong> in the Gatekeeper dialog (one-time).</div></div>
           <div class="sr"><div class="sn">4</div><div class="st2">App is now in Applications. Works fully offline.</div></div>
@@ -252,37 +247,9 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
         </div>
         <div class="sc"><h4>System Requirements</h4>
           <div class="sr"><div class="sn">✓</div><div class="st2"><strong>OS:</strong> macOS 11 Big Sur or newer</div></div>
-          <div class="sr"><div class="sn">✓</div><div class="st2"><strong>Chip:</strong> Intel x64 and Apple Silicon (M1/M2/M3) both supported</div></div>
+          <div class="sr"><div class="sn">✓</div><div class="st2"><strong>Chip:</strong> Intel x64 and Apple Silicon (M1/M2/M3/M4) both supported</div></div>
           <div class="sr"><div class="sn">✓</div><div class="st2"><strong>RAM:</strong> 4 GB minimum</div></div>
           <div class="sr"><div class="sn">✓</div><div class="st2"><strong>Internet:</strong> Not required — fully offline</div></div>
-          <div style="margin-top:16px;text-align:center">
-            <a href="ClassDismissed-ElectronSource.zip" download class="btn b-gold" style="max-width:280px;margin:0 auto;display:inline-flex">📦 Get Source to Build .dmg</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="tp" id="t-build">
-      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:28px">
-        <h4 style="font-size:1rem;color:white;margin-bottom:6px">Build the Windows .exe and Mac .dmg yourself</h4>
-        <p style="font-size:.83rem;color:rgba(255,255,255,.5);margin-bottom:20px;line-height:1.6">Class Dismissed is built with <strong style="color:white">Electron</strong> — the same technology behind VS Code and Slack. Compile your own installer in about 5 minutes.</p>
-        <div class="step-g">
-          <div class="sc"><h4>Prerequisites</h4>
-            <div class="sr"><div class="sn">1</div><div class="st2">Install <strong>Node.js 18+</strong> from <a href="https://nodejs.org" target="_blank" style="color:var(--teal2)">nodejs.org</a> (free, includes npm)</div></div>
-            <div class="sr"><div class="sn">2</div><div class="st2">Download and unzip <code>ClassDismissed-ElectronSource.zip</code></div></div>
-            <div class="sr"><div class="sn">3</div><div class="st2">Open a terminal: <strong>Command Prompt</strong> (Windows) or <strong>Terminal</strong> (Mac)</div></div>
-          </div>
-          <div class="sc"><h4>Build Commands</h4>
-            <div class="sr"><div class="sn">1</div><div class="st2"><code>cd class-dismissed</code> then <code>npm install</code><br><span style="font-size:.75rem;opacity:.6">Downloads Electron ~80MB (one time)</span></div></div>
-            <div class="sr"><div class="sn">2</div><div class="st2"><strong>Windows:</strong> <code>npm run build:win</code><br>→ <code>dist/Class Dismissed Setup 1.0.0.exe</code></div></div>
-            <div class="sr"><div class="sn">3</div><div class="st2"><strong>Mac:</strong> <code>npm run build:mac</code><br>→ <code>dist/Class Dismissed-1.0.0.dmg</code></div></div>
-          </div>
-        </div>
-        <div style="text-align:center;margin-top:24px">
-          <a href="ClassDismissed-ElectronSource.zip" download class="btn b-gold" style="max-width:340px;margin:0 auto;display:inline-flex">
-            📦 Download Electron Source Code (.zip)
-          </a>
-          <p style="font-size:.73rem;color:rgba(255,255,255,.3);margin-top:10px">Includes main.js · package.json · app.html · icons · BUILD_GUIDE.txt</p>
         </div>
       </div>
     </div>
@@ -291,15 +258,15 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
 
 <div style="padding:56px 24px;background:linear-gradient(160deg,#0d0d1f 0%,#1a2e1a 100%);border-top:1px solid rgba(255,255,255,.07)">
   <div style="max-width:720px;margin:0 auto;text-align:center">
-    <div style="font-family:var(--font-m);font-size:.68rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold2);font-weight:600;margin-bottom:8px">☕ Support the Work</div>
-    <div style="font-family:var(--font-d);font-size:clamp(1.6rem,3.5vw,2.2rem);color:white;font-weight:700;margin-bottom:14px;letter-spacing:-0.5px">Class Dismissed is free.<br>Your support keeps it that way.</div>
+    <div style="font-family:var(--fm);font-size:.68rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold2);font-weight:600;margin-bottom:8px">☕ Support the Work</div>
+    <div style="font-family:var(--fd);font-size:clamp(1.6rem,3.5vw,2.2rem);color:white;font-weight:700;margin-bottom:14px;letter-spacing:-0.5px">Class Dismissed is free.<br>Your support keeps it that way.</div>
     <p style="font-size:.92rem;color:rgba(255,255,255,.62);line-height:1.7;max-width:580px;margin:0 auto 32px">
       Maintaining this tool takes real time — tracking Social Security law changes, pension updates across 50 states,
       tax rule revisions, and improving the planner year after year. If Class Dismissed helped you feel more prepared
       for retirement, a small donation means a lot and keeps everything up to date.
     </p>
     <a href="https://buymeacoffee.com/householderm" target="_blank" rel="noopener"
-      style="display:inline-flex;align-items:center;gap:10px;padding:16px 40px;border-radius:50px;background:#FFDD00;color:#1a1a1a;font-weight:800;font-size:1.05rem;text-decoration:none;box-shadow:0 6px 28px rgba(255,221,0,.4);transition:all .2s;font-family:var(--font-b);letter-spacing:-.3px"
+      style="display:inline-flex;align-items:center;gap:10px;padding:16px 40px;border-radius:50px;background:#FFDD00;color:#1a1a1a;font-weight:800;font-size:1.05rem;text-decoration:none;box-shadow:0 6px 28px rgba(255,221,0,.4);transition:all .2s;letter-spacing:-.3px"
       onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 36px rgba(255,221,0,.55)'"
       onmouseout="this.style.transform='';this.style.boxShadow='0 6px 28px rgba(255,221,0,.4)'">
       ☕ Buy Me a Coffee
@@ -322,18 +289,10 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
       <div class="hc"><div class="hc-t">Already have it</div><h4>School / Union Site</h4><p>Upload to your teacher association, union, or district website. Add the HTML to any web folder.</p></div>
     </div>
 
-    <p style="font-size:.82rem;color:rgba(255,255,255,.35);margin-bottom:10px">Your shareable link — edit and share:</p>
+    <p style="font-size:.82rem;color:rgba(255,255,255,.35);margin-bottom:10px">Your shareable link:</p>
     <div class="url-row">
-      <input type="text" class="url-inp" id="share-url" value="https://your-site.com/class-dismissed" readonly onclick="this.select()">
+      <input type="text" class="url-inp" id="share-url" value="https://householderm.github.io/class-dismissed" readonly onclick="this.select()">
       <button class="copy-btn" onclick="copyLink()">Copy Link</button>
-    </div>
-
-    <p style="font-size:.82rem;color:rgba(255,255,255,.35);margin-bottom:14px;margin-top:8px">Files to upload:</p>
-    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:18px 20px;text-align:left;font-family:var(--fm);font-size:.8rem;color:rgba(255,255,255,.55);line-height:2.1">
-      📄 <strong style="color:white">class-dismissed-download-page.html</strong> &nbsp;← rename to index.html<br>
-      📄 <strong style="color:white">ClassDismissed-RetirementPlanner.html</strong> &nbsp;← the app itself<br>
-      📦 <strong style="color:white">ClassDismissed-ElectronSource.zip</strong> &nbsp;← Electron source code<br>
-      <span style="color:rgba(255,255,255,.3);font-size:.72rem">+ Add .exe and .dmg after building from source</span>
     </div>
   </div>
 </div>
@@ -341,7 +300,7 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
 <footer>
   <p>Class Dismissed is a free educational tool for public school teachers. Not a substitute for professional financial advice.</p>
   <p style="margin-top:6px">Always consult a licensed financial advisor or retirement counselor for personalized guidance.</p>
-  <p style="margin-top:12px">© 2025 Class Dismissed — For Public School Educators &nbsp;·&nbsp; <a href="ClassDismissed-RetirementPlanner.html" target="_blank">Open App</a> &nbsp;·&nbsp; <a href="ClassDismissed-ElectronSource.zip" download>Source Code</a> &nbsp;·&nbsp; <a href="https://buymeacoffee.com/householderm" target="_blank" rel="noopener" style="color:#FFDD00">☕ Buy Me a Coffee</a></p>
+  <p style="margin-top:12px">© 2025 Class Dismissed — For Public School Educators &nbsp;·&nbsp; <a href="ClassDismissed-RetirementPlanner.html" target="_blank">Open App</a> &nbsp;·&nbsp; <a href="https://buymeacoffee.com/householderm" target="_blank" rel="noopener" style="color:#FFDD00">☕ Buy Me a Coffee</a></p>
 </footer>
 
 <script>
