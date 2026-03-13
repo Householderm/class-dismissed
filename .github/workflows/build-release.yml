@@ -1,0 +1,101 @@
+name: Build & Release Class Dismissed
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: ClassDismissed-ElectronSource/class-dismissed
+        run: npm install
+
+      - name: Build Windows installer
+        working-directory: ClassDismissed-ElectronSource/class-dismissed
+        run: npm run build:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: ClassDismissed-ElectronSource/class-dismissed/dist/*.exe
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: ClassDismissed-ElectronSource/class-dismissed
+        run: npm install
+
+      - name: Build Mac DMG
+        working-directory: ClassDismissed-ElectronSource/class-dismissed
+        run: npm run build:mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Mac artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac-installer
+          path: ClassDismissed-ElectronSource/class-dismissed/dist/*.dmg
+
+  release:
+    needs: [build-windows, build-mac]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-installer
+          path: dist/
+
+      - name: Download Mac artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: mac-installer
+          path: dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Class Dismissed ${{ github.ref_name }}"
+          body: |
+            ## Class Dismissed — Teacher Retirement Planner ${{ github.ref_name }}
+
+            A free, private retirement planner built exclusively for public school teachers.
+
+            ### Download
+            - Windows: Class-Dismissed-Setup.exe
+            - Mac (Intel): Class-Dismissed-x64.dmg
+            - Mac (Apple Silicon): Class-Dismissed-arm64.dmg
+
+            ### Privacy
+            No data is ever sent to any server — everything stays on your device.
+          files: dist/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
