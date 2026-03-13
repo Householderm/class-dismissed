@@ -42,10 +42,12 @@
       ],
       "icon": "assets/icon.icns",
       "category": "public.app-category.finance"
+    },
     "dmg": {
-  "title": "Class Dismissed Installer",
-  "background": null,
-  "window": { "width": 540, "height": 380 }
+      "title": "Class Dismissed Installer",
+      "background": null,
+      "window": { "width": 540, "height": 380 }
+    }
   },
   "devDependencies": {
     "electron": "^28.0.0",
