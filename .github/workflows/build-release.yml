@@ -18,12 +18,12 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        working-directory: ClassDismissed-ElectronSource/class-dismissed
         run: npm install
+        working-directory: ${{ github.workspace }}/ClassDismissed-ElectronSource/class-dismissed
 
       - name: Build Windows installer
-        working-directory: ClassDismissed-ElectronSource/class-dismissed
         run: npm run build:win
+        working-directory: ${{ github.workspace }}/ClassDismissed-ElectronSource/class-dismissed
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -45,12 +45,12 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        working-directory: ClassDismissed-ElectronSource/class-dismissed
         run: npm install
+        working-directory: ${{ github.workspace }}/ClassDismissed-ElectronSource/class-dismissed
 
       - name: Build Mac DMG
-        working-directory: ClassDismissed-ElectronSource/class-dismissed
         run: npm run build:mac
+        working-directory: ${{ github.workspace }}/ClassDismissed-ElectronSource/class-dismissed
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
