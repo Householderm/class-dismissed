@@ -496,6 +496,38 @@
       opacity: 0.75;
     }
 
+    /* ── SMARTSCREEN NOTE ── */
+    .smartscreen-note {
+      margin-top: 0.8rem;
+      padding: 0.85rem 1rem;
+      background: #fffbf0;
+      border: 1px solid rgba(212,168,67,0.4);
+      border-left: 3px solid var(--gold);
+      border-radius: 2px;
+    }
+
+    .smartscreen-note p {
+      font-size: 0.75rem;
+      line-height: 1.65;
+      color: var(--ink);
+      opacity: 0.8;
+    }
+
+    .smartscreen-note strong {
+      font-weight: 600;
+      color: var(--ink);
+      opacity: 1;
+    }
+
+    .smartscreen-steps {
+      margin-top: 0.5rem;
+      padding-left: 0.2rem;
+      font-size: 0.73rem;
+      color: var(--ink);
+      opacity: 0.75;
+      line-height: 1.9;
+    }
+
     /* ── FOOTER ── */
     footer {
       border-top: 4px double var(--ink);
@@ -753,8 +785,6 @@
     ══════════════════════════════════════ */
 
     @media (max-width: 768px) {
-
-      /* -- HERO: stack into single column */
       .hero {
         grid-template-columns: 1fr;
         padding: 2rem 1.2rem 1.5rem;
@@ -762,23 +792,17 @@
       }
       .hero-col-divider { display: none; }
       .hero-right { margin-top: 0; }
-
-      /* Pull quote on mobile: tighter */
       .pullquote {
         margin-top: 0;
         margin-bottom: 1.5rem;
         padding: 1.2rem 0;
       }
-
-      /* Hero CTA: full width, generous tap target */
       .hero-cta {
         width: 100%;
         font-size: 0.9rem;
         padding: 1rem 1.2rem;
         letter-spacing: 0.07em;
       }
-
-      /* -- FEATURES STRIP: wrap items into 2-column grid on small screens */
       .features-strip {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -791,8 +815,6 @@
         font-size: 0.63rem;
         letter-spacing: 0.12em;
       }
-
-      /* -- CARDS: single column */
       .cards {
         grid-template-columns: 1fr;
         gap: 1.5px;
@@ -800,16 +822,12 @@
       .card {
         padding: 1.6rem 1.4rem 1.8rem;
       }
-
-      /* Buttons: full width, good tap size */
       .btn, .btn-small {
         width: 100%;
         text-align: center;
         min-height: 48px;
         font-size: 0.82rem;
       }
-
-      /* -- WHY SECTION: stack */
       .why-inner {
         grid-template-columns: 1fr;
         gap: 2.5rem;
@@ -817,8 +835,6 @@
       .why-section {
         padding: 2.5rem 1.2rem;
       }
-
-      /* -- SCOPE: stack columns, reduce padding */
       .scope-columns {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -829,53 +845,39 @@
       .scope-box {
         padding: 1.4rem 1.2rem;
       }
-      /* Inner double-border inset looks odd at small size; reduce */
       .scope-box::before {
         inset: 3px;
       }
-
-      /* -- SCOPE REPORT NOTE: stack icon on small screens */
       .scope-report-note {
         flex-direction: column;
         gap: 0.6rem;
       }
-
-      /* -- MASTHEAD DATELINE: may be long, allow wrap */
       .masthead-dateline {
         letter-spacing: 0.1em;
         font-size: 0.65rem;
         white-space: normal;
         line-height: 1.5;
       }
-
-      /* -- DOWNLOAD SECTION padding */
       .download-section {
         padding: 2rem 1.2rem;
       }
-
-      /* -- DISCLAIMER padding */
       .disclaimer {
         padding: 1rem 1.2rem;
       }
     }
 
-    /* Extra small phones (< 400px) */
     @media (max-width: 400px) {
-      /* Features strip: single column */
       .features-strip {
         grid-template-columns: 1fr;
         gap: 0.5rem;
       }
-
       .masthead-title {
         font-size: clamp(2rem, 11vw, 3.5rem);
         letter-spacing: -0.01em;
       }
-
       .scope-box {
         padding: 1.1rem 0.9rem;
       }
-
       .hero {
         padding: 1.5rem 1rem 1.2rem;
       }
@@ -926,6 +928,12 @@
          class="hero-cta">
         ▶ &nbsp;Open in Browser — Free, No Install
       </a>
+      <div style="margin-top:0.6rem;padding:0.65rem 0.9rem;background:#f0f7f4;border:1px solid #a8d5c2;border-left:3px solid #4a6741;border-radius:2px;">
+        <p style="font-size:0.68rem;line-height:1.6;color:#1a1410;font-style:italic;">
+          🔒 <strong style="font-style:normal;font-weight:700;color:#1a1410;">Your privacy is protected.</strong>
+          Everything you enter stays in your browser only — nothing is collected or transmitted by anyone.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -950,6 +958,12 @@
         <div class="btn-group">
           <a href="https://householderm.github.io/Class-dismissed/class-dismissed-main/ClassDismissed-RetirementPlanner.html"
              class="btn btn-primary">▶ Open Now</a>
+          <div style="margin-top:0.7rem;padding:0.75rem 0.9rem;background:#f5f0e8;border:1px solid rgba(26,20,16,0.12);border-left:3px solid var(--sage);border-radius:2px;">
+            <p style="font-size:0.72rem;line-height:1.65;color:var(--ink);opacity:0.75;font-style:italic;">
+              🔒 <strong style="font-style:normal;font-weight:600;opacity:1">Your privacy is protected.</strong>
+              Everything you enter stays entirely within your browser. No data is collected, stored, or transmitted — by anyone, ever.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -965,6 +979,16 @@
         <div class="btn-group">
           <a href="https://github.com/Householderm/Class-dismissed/releases/download/v1.0.0/Class.Dismissed.Setup.1.0.0.exe"
              class="btn">⬇ Download for Windows</a>
+          <!-- SMARTSCREEN NOTE -->
+          <div class="smartscreen-note">
+            <p><strong>⚠️ Windows Security Notice:</strong> After downloading, Windows may show a red SmartScreen warning saying the app is "unrecognized." This happens because the file is not yet digitally signed — <strong>not because it contains any harmful content.</strong></p>
+            <div class="smartscreen-steps">
+              To open it anyway:<br>
+              1. Click <strong>"More info"</strong> on the warning screen<br>
+              2. Then click <strong>"Run anyway"</strong><br>
+              3. The app will open normally
+            </div>
+          </div>
         </div>
       </div>
 
