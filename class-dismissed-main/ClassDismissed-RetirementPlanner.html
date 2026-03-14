@@ -832,8 +832,8 @@
 
 <!-- First-run helper: shown only when opened as a local file -->
 <div id="local-file-banner" style="display:none;background:#1a2e1a;color:#c8f0d0;padding:10px 24px;font-size:0.8rem;text-align:center;border-bottom:1px solid rgba(110,231,183,0.2)">
-  📁 <strong>Running locally on your computer</strong> — All calculations happen on your device. No data is ever sent anywhere. 
-  &nbsp;·&nbsp; <strong>Windows:</strong> Double-click the .html file to open &nbsp;·&nbsp; <strong>Mac:</strong> Double-click or right-click → Open With → Safari or Chrome
+  📁 <strong>Running locally on your computer</strong> — All calculations happen on your device. No data is ever sent anywhere.
+  &nbsp;·&nbsp; <strong>Tip:</strong> To revisit anytime — save or bookmark this file in your browser.
   <button onclick="document.getElementById('local-file-banner').style.display='none'" style="background:none;border:none;color:#6ee7b7;cursor:pointer;margin-left:12px;font-size:1rem">✕</button>
 </div>
 <script>
@@ -2074,25 +2074,21 @@ function updateTips() {
 // ============================
 function generateResults() {
   const age = v('q-age') || 45;
-  // Income
   const retireAge = v('q-retireage') || 62;
   const yrsToRetire = Math.max(retireAge - age, 0);
   const currentYear = new Date().getFullYear();
   const retireYear = currentYear + yrsToRetire;
 
-  // Income
   const salary = v('q-salary');
   const spouseIncome = v('q-spouse-income');
   const totalIncome = salary + spouseIncome;
 
-  // Pension
   const pknown = pensionMode === 'own' ? v('q-pension-known') : 0;
   const mult = v('q-pension-mult') / 100 || 0.02;
   const pYrs = v('q-pension-yrs') || (v('q-service') + yrsToRetire);
   const salaryRetire = v('q-salary-retire') || salary;
   const annualPension = pknown > 0 ? pknown : (mult * pYrs * salaryRetire);
 
-  // Expenses
   const expFields = ['e-mortgage','e-proptax','e-homeins','e-utilities','e-hoa','e-maint',
     'e-carpay','e-gas','e-autoins','e-transport','e-food','e-dining','e-health',
     'e-ent','e-clothing','e-travel','e-charity','e-misc'];
@@ -2101,7 +2097,6 @@ function generateResults() {
   const retireExpPct = v('retire-spend-pct') / 100 || 0.80;
   const retireAnnualExp = annualExp * retireExpPct;
 
-  // Social Security
   const spouseSS67 = v('q-spouse-ss67');
   const spouseSS70 = v('q-spouse-ss70');
   const spouseSS62 = v('q-spouse-ss62');
@@ -2121,7 +2116,6 @@ function generateResults() {
     else teacherSSAnnual = ownSS67 * 12;
   }
 
-  // Savings at retirement
   const returnRate = getRadio('rg-return').includes('5') ? 0.05 : getRadio('rg-return').includes('9') ? 0.09 : 0.07;
   const inflationRate = getRadio('rg-inflation').includes('2') ? 0.02 : getRadio('rg-inflation').includes('4') ? 0.04 : 0.03;
   const realReturn = returnRate - inflationRate;
@@ -2153,8 +2147,6 @@ function generateResults() {
   const totalRetireSavings = fv403b + fv457b + fvIRA + fvSpouseRet + fvBrokerage + fvSavings + fvHSA;
 
   const sideIncome = v('q-side-income') * 12;
-
-  // 4% rule withdrawal
   const safeWithdrawal = totalRetireSavings * 0.04;
   const totalRetireIncome = annualPension + spouseSSAnnual + teacherSSAnnual + safeWithdrawal + sideIncome;
 
@@ -2162,17 +2154,14 @@ function generateResults() {
   const gapPct = Math.min((totalRetireIncome / retireAnnualExp) * 100, 140);
   const funded = gap >= 0;
 
-  // Life expectancy
   const lifeExp = v('q-lifeexp') || 90;
   const retireYears = lifeExp - retireAge;
   const portfolioNeeded = retireAnnualExp * 25;
 
-  // Update title
   document.getElementById('results-title').innerText = 'Your Retirement Readiness Report';
   document.getElementById('results-subtitle').innerText =
     `Planned retirement at age ${retireAge} (${retireYear}) · ${retireYears} year plan · As of ${currentYear}`;
 
-  // Populate print header fields
   document.getElementById('print-date').innerText = 'Generated: ' + new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
   document.getElementById('ph-age').innerText      = age || '—';
   document.getElementById('ph-retire').innerText   = `Age ${retireAge} (${retireYear})`;
@@ -2181,11 +2170,9 @@ function generateResults() {
   document.getElementById('ph-pension-src').innerText = pensionMode === 'own' ? 'State TRS / Known' : 'Built-in Estimate';
   document.getElementById('ph-pension').innerText  = annualPension > 0 ? fmt(annualPension) + '/yr' : '—';
 
-  // Show sticky print bar
   const printBar = document.getElementById('print-btn-bar');
   if (printBar) printBar.style.display = 'block';
 
-  // KPI CARDS
   const kpis = [
     { label: 'TOTAL RETIRE INCOME', val: fmtK(totalRetireIncome), sub: 'per year', highlight: false },
     { label: 'ANNUAL EXPENSES', val: fmtK(retireAnnualExp), sub: 'in retirement', highlight: false },
@@ -2202,7 +2189,6 @@ function generateResults() {
     </div>
   `).join('');
 
-  // INCOME TABLE
   const rows = [];
   if (annualPension > 0) rows.push({ source: '🏫 Teacher Pension', type: '<span class="badge badge-green">Guaranteed</span>', note: pensionMode === 'own' ? 'From state TRS calculator' : `${Math.round(pYrs)} yrs × ${(mult*100).toFixed(1)}%`, amount: annualPension });
   if (teacherSSAnnual > 0) rows.push({ source: '🏛️ Your Social Security', type: '<span class="badge badge-blue">Social Security</span>', note: 'WEP repealed (SSFA 2025)', amount: teacherSSAnnual });
@@ -2220,7 +2206,6 @@ function generateResults() {
     </tr>
   `).join('');
 
-  // GAP ANALYSIS
   const barFill = Math.min(gapPct, 100);
   document.getElementById('gap-analysis').innerHTML = `
     <div class="gap-bar-wrap">
@@ -2252,7 +2237,6 @@ function generateResults() {
     </div>` : ''}
   `;
 
-  // TIMELINE
   const mortgageYrs = v('q-mortgage-yrs');
   const mortgagePmt = v('q-mortgage-pmt');
   const events = [];
@@ -2263,7 +2247,6 @@ function generateResults() {
     events.push({ yr: mortgagePayoffYear, text: `🏠 Mortgage Paid Off`, sub: `Expenses drop by ${fmt(mortgagePmt * 12)}/yr`, gold: false });
   }
 
-  // Debt items
   const debtItems = document.querySelectorAll('.debt-item');
   debtItems.forEach(item => {
     const inputs = item.querySelectorAll('input');
@@ -2298,7 +2281,6 @@ function generateResults() {
     </div>
   `).join('');
 
-  // SS STRATEGY
   const wasWEP = getRadio('rg-was-wep');
   const wasAffected = wasWEP.includes('WEP') || wasWEP.includes('GPO') || wasWEP.includes('sure');
   const restoredSS = v('q-ss-restored');
@@ -2306,7 +2288,6 @@ function generateResults() {
   const restoredGain = (restoredSS - oldSS) * 12;
   let ssHTML = '';
 
-  // SSFA Banner — always shown for pension-exempt teachers
   ssHTML += `
   <div style="background:linear-gradient(135deg,#1a2e1a,#1e3a2e);border-radius:14px;padding:18px 20px;margin-bottom:16px;color:white">
     <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:1.5px;color:#6ee7b7;font-weight:700;margin-bottom:6px;font-family:var(--font-mono)">🏛️ Social Security Fairness Act — January 5, 2025</div>
@@ -2326,7 +2307,6 @@ function generateResults() {
     </div>
   </div>`;
 
-  // Restored benefit gain if applicable
   if (wasAffected && restoredGain > 0) {
     ssHTML += `
     <div class="tax-tip" style="border-left-color:var(--green)">
@@ -2352,7 +2332,6 @@ function generateResults() {
     </div>`;
   }
 
-  // Spousal SS
   if (spouseSSAnnual > 0) {
     const delayBenefit = (v('q-spouse-ss70') - v('q-spouse-ss67')) * 12;
     ssHTML += `
@@ -2372,7 +2351,6 @@ function generateResults() {
     </div>`;
   }
 
-  // Survivor benefit note
   ssHTML += `
   <div class="tax-tip" style="border-left-color:var(--gold)">
     <div class="tt-title">🛡️ Survivor Benefits — Now Fully Restored</div>
@@ -2397,7 +2375,6 @@ function generateResults() {
 
   document.getElementById('ss-strategy-box').innerHTML = ssHTML;
 
-  // TAX TIPS
   const bracket = str('q-bracket') || '22%';
   const tradAccts = (current403b + v('a-ira'));
   const rothAccts = v('a-roth');
@@ -2424,7 +2401,6 @@ function generateResults() {
 
   document.getElementById('tax-tips-box').innerHTML = taxHTML;
 
-  // SAVINGS GROWTH
   const savingsRows = [
     { name: '403(b)', current: current403b, future: fv403b },
     { name: '457(b)', current: current457b, future: fv457b },
@@ -2455,7 +2431,6 @@ function generateResults() {
     Inflation adjusted real return: ${Math.round(realReturn*100)}%.
   </p>`;
 
-  // SCENARIOS
   showScenario(document.querySelector('.scenario-tab.active'), 'early');
   generateScenario('early');
   generateScenario('planned');
@@ -2501,12 +2476,10 @@ function showScenario(el, type) {
 // PRINT REPORT
 // ============================
 function printReport() {
-  // Make sure all three scenarios are pre-rendered in print-visible divs
   const early   = window['scenario_early']   || '';
   const planned = window['scenario_planned'] || '';
   const late    = window['scenario_late']    || '';
 
-  // Build a single combined scenario block for print (all three side by side via CSS grid)
   document.getElementById('scenario-content').innerHTML =
     `<div style="font-size:0.82rem;color:var(--slate);font-weight:600;margin-bottom:8px">Early (−2 yrs)</div>${early}` +
     `<div style="font-size:0.82rem;color:var(--slate);font-weight:600;margin-bottom:8px;margin-top:12px">Planned</div>${planned}` +
@@ -2514,7 +2487,6 @@ function printReport() {
 
   window.print();
 
-  // Restore to active scenario after print dialog closes
   setTimeout(() => {
     const activeTab = document.querySelector('.scenario-tab.active');
     if (activeTab) {
