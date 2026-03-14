@@ -941,10 +941,16 @@
             </div>
           </div>
           <div class="q-item">
-            <label>Expected Salary at Retirement</label>
+            <label>Final Average Salary (FAS) <span class="hint">used for pension calculation</span></label>
             <div class="input-prefix-wrap">
               <span class="input-prefix">$</span>
               <input type="number" id="q-salary-retire" placeholder="72,000">
+            </div>
+            <div style="margin-top:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:0.72rem;color:var(--muted);line-height:1.6">
+              Most pensions use your highest 3–5 year salary average, not just your last year. Check your state TRS for the exact formula.
+              <span style="display:block;margin-top:4px;color:var(--muted)">
+                Examples: Ohio STRS · CalSTRS · NY STRS = 3-yr avg &nbsp;·&nbsp; Texas TRS · PSERS (PA) = 5-yr avg &nbsp;·&nbsp; MTRS (MA) = 3-yr avg
+              </span>
             </div>
           </div>
         </div>
@@ -966,10 +972,109 @@
         <div class="q-group-title">Spouse / Partner</div>
         <div class="q-row">
           <div class="q-item full">
-            <label>Are you married or have a domestic partner?</label>
+            <label>What is your current marital status?</label>
             <div class="radio-group" id="rg-married">
-              <div class="radio-btn selected" onclick="selectRadio(this,'rg-married');toggleSpouse(true)">Yes</div>
-              <div class="radio-btn" onclick="selectRadio(this,'rg-married');toggleSpouse(false)">No</div>
+              <div class="radio-btn selected" onclick="selectRadio(this,'rg-married');handleMaritalStatus('married')">Married</div>
+              <div class="radio-btn" onclick="selectRadio(this,'rg-married');handleMaritalStatus('partner')">Domestic Partner</div>
+              <div class="radio-btn" onclick="selectRadio(this,'rg-married');handleMaritalStatus('single')">Single</div>
+              <div class="radio-btn" onclick="selectRadio(this,'rg-married');handleMaritalStatus('divorced')">Divorced</div>
+              <div class="radio-btn" onclick="selectRadio(this,'rg-married');handleMaritalStatus('widowed')">Widowed</div>
+            </div>
+
+            <!-- DIVORCED SECTION -->
+            <div id="divorced-section" style="display:none;margin-top:16px">
+              <div style="background:linear-gradient(135deg,rgba(42,157,143,0.08),rgba(201,168,76,0.06));border:1px solid rgba(42,157,143,0.2);border-radius:12px;padding:14px 18px;margin-bottom:14px;font-size:0.82rem;color:var(--slate);line-height:1.6">
+                💡 <strong style="color:var(--teal)">Divorced Spousal SS Benefit:</strong> You may qualify for Social Security benefits based on your ex-spouse's record if you were married for <strong>10 or more years</strong>, are currently unmarried, and are age 62 or older. The benefit does not reduce your ex-spouse's own benefit.
+              </div>
+              <div class="q-row">
+                <div class="q-item">
+                  <label>Length of Marriage <span class="hint">(years)</span></label>
+                  <div class="input-suffix-wrap">
+                  <input type="number" id="q-divorce-marriage-yrs" placeholder="e.g. 14" oninput="checkDivorceEligibility()">
+                  <span class="input-suffix">yrs</span></div>
+                </div>
+                <div class="q-item">
+                  <label>Is your ex-spouse still living?</label>
+                  <div class="radio-group" id="rg-ex-living" style="margin-top:8px">
+                    <div class="radio-btn selected" onclick="selectRadio(this,'rg-ex-living');checkDivorceEligibility()">Yes</div>
+                    <div class="radio-btn" onclick="selectRadio(this,'rg-ex-living');checkDivorceEligibility()">No</div>
+                    <div class="radio-btn" onclick="selectRadio(this,'rg-ex-living');checkDivorceEligibility()">Not Sure</div>
+                  </div>
+                </div>
+              </div>
+              <div class="q-row">
+                <div class="q-item">
+                  <label>Was divorce finalized before or after ex-spouse claimed SS?</label>
+                  <div class="radio-group" id="rg-divorce-timing" style="margin-top:8px">
+                    <div class="radio-btn selected" onclick="selectRadio(this,'rg-divorce-timing')">Before — ex has not yet claimed</div>
+                    <div class="radio-btn" onclick="selectRadio(this,'rg-divorce-timing')">After — ex is already receiving SS</div>
+                    <div class="radio-btn" onclick="selectRadio(this,'rg-divorce-timing')">Not Sure</div>
+                  </div>
+                </div>
+              </div>
+              <div class="q-row">
+                <div class="q-item">
+                  <label>Ex-Spouse's Estimated SS at 62 <span class="hint">/mo</span></label>
+                  <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+                  <input type="number" id="q-ex-ss-62" placeholder="1,200" oninput="checkDivorceEligibility()"></div>
+                </div>
+                <div class="q-item">
+                  <label>Ex-Spouse's Estimated SS at 67 (FRA) <span class="hint">/mo</span></label>
+                  <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+                  <input type="number" id="q-ex-ss-67" placeholder="1,800" oninput="checkDivorceEligibility()"></div>
+                </div>
+                <div class="q-item">
+                  <label>Ex-Spouse's Estimated SS at 70 <span class="hint">/mo</span></label>
+                  <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+                  <input type="number" id="q-ex-ss-70" placeholder="2,300" oninput="checkDivorceEligibility()"></div>
+                </div>
+              </div>
+              <div id="divorce-eligibility-result" style="margin-top:8px"></div>
+            </div>
+
+            <!-- WIDOWED SECTION -->
+            <div id="widowed-section" style="display:none;margin-top:16px">
+              <div style="background:linear-gradient(135deg,rgba(45,154,111,0.1),rgba(42,157,143,0.07));border:2px solid rgba(45,154,111,0.3);border-radius:12px;padding:16px 18px;margin-bottom:14px">
+                <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);font-weight:700;margin-bottom:6px;font-family:var(--font-mono)">🏛️ GPO Repeal — Important for Surviving Spouses</div>
+                <p style="font-size:0.83rem;color:var(--slate);line-height:1.65">
+                  The <strong>Social Security Fairness Act (Jan 2025)</strong> repealed the Government Pension Offset (GPO). 
+                  Teachers who were previously <strong>denied or reduced survivor/spousal SS benefits</strong> because of their teacher pension may now be entitled to their <strong>full survivor benefit</strong>. 
+                  Retroactive payments back to January 2024 are being issued by the SSA.
+                </p>
+              </div>
+              <div class="q-row">
+                <div class="q-item">
+                  <label>Were you previously denied survivor SS benefits due to GPO?</label>
+                  <div class="radio-group" id="rg-widow-gpo" style="margin-top:8px">
+                    <div class="radio-btn selected" onclick="selectRadio(this,'rg-widow-gpo');checkWidowEligibility()">Yes — benefits were denied or reduced</div>
+                    <div class="radio-btn" onclick="selectRadio(this,'rg-widow-gpo');checkWidowEligibility()">No — I was not affected</div>
+                    <div class="radio-btn" onclick="selectRadio(this,'rg-widow-gpo');checkWidowEligibility()">Not Sure</div>
+                  </div>
+                </div>
+              </div>
+              <div class="q-row">
+                <div class="q-item">
+                  <label>Have you remarried?</label>
+                  <div class="radio-group" id="rg-widow-remarried" style="margin-top:8px">
+                    <div class="radio-btn selected" onclick="selectRadio(this,'rg-widow-remarried');checkWidowEligibility()">No — still unmarried</div>
+                    <div class="radio-btn" onclick="selectRadio(this,'rg-widow-remarried');checkWidowEligibility()">Yes — remarried after age 60</div>
+                    <div class="radio-btn" onclick="selectRadio(this,'rg-widow-remarried');checkWidowEligibility()">Yes — remarried before age 60</div>
+                  </div>
+                </div>
+              </div>
+              <div class="q-row">
+                <div class="q-item">
+                  <label>Deceased Spouse's SS Benefit at Time of Death <span class="hint">/mo</span></label>
+                  <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+                  <input type="number" id="q-deceased-ss" placeholder="1,800" oninput="checkWidowEligibility()"></div>
+                </div>
+                <div class="q-item">
+                  <label>Your Current or Estimated Survivor Benefit <span class="hint">/mo, if known</span></label>
+                  <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+                  <input type="number" id="q-survivor-benefit" placeholder="1,800" oninput="checkWidowEligibility()"></div>
+                </div>
+              </div>
+              <div id="widow-eligibility-result" style="margin-top:8px"></div>
             </div>
           </div>
         </div>
@@ -987,6 +1092,102 @@
               </div>
             </div>
           </div>
+
+          <!-- SPOUSE PUBLIC EMPLOYEE -->
+          <div class="q-row">
+            <div class="q-item full">
+              <label>Is your spouse/partner a public employee? <span class="hint">(teacher, government, municipal, school staff, etc.)</span></label>
+              <div class="radio-group" id="rg-spouse-public">
+                <div class="radio-btn selected" onclick="selectRadio(this,'rg-spouse-public');toggleSpousePension(false)">No — private sector</div>
+                <div class="radio-btn" onclick="selectRadio(this,'rg-spouse-public');toggleSpousePension(true)">Yes — public employee</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="spouse-pension-section" style="display:none">
+            <div class="q-row">
+              <div class="q-item full">
+                <label>Which type of public pension does your spouse have?</label>
+                <div class="radio-group" id="rg-spouse-pension-type">
+                  <div class="radio-btn selected" onclick="selectRadio(this,'rg-spouse-pension-type')">STRS — State Teachers Retirement</div>
+                  <div class="radio-btn" onclick="selectRadio(this,'rg-spouse-pension-type')">SERS — School Employees Retirement</div>
+                  <div class="radio-btn" onclick="selectRadio(this,'rg-spouse-pension-type')">PERS — Public Employees Retirement</div>
+                  <div class="radio-btn" onclick="selectRadio(this,'rg-spouse-pension-type')">Other Public Pension</div>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:0;border:2px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:18px;max-width:520px">
+              <button id="spouse-pension-mode-own" onclick="setSpousePensionMode('own')"
+                style="flex:1;padding:11px 16px;border:none;cursor:pointer;font-family:var(--font-body);font-size:0.85rem;font-weight:700;background:var(--teal);color:white;transition:all 0.2s">
+                ✏️ I'll Enter the Amount
+              </button>
+              <button id="spouse-pension-mode-calc" onclick="setSpousePensionMode('calc')"
+                style="flex:1;padding:11px 16px;border:none;cursor:pointer;font-family:var(--font-body);font-size:0.85rem;font-weight:600;background:var(--surface);color:var(--slate);transition:all 0.2s">
+                🧮 Use Built-In Estimator
+              </button>
+            </div>
+            <div id="spouse-pension-own-section">
+              <div style="background:linear-gradient(135deg,rgba(42,157,143,0.08),rgba(201,168,76,0.06));border:1px solid rgba(42,157,143,0.2);border-radius:12px;padding:14px 18px;margin-bottom:16px;font-size:0.82rem;color:var(--slate);line-height:1.6">
+                💡 <strong style="color:var(--teal)">Ask your spouse to check their pension estimate using their retirement system's online calculator.</strong>
+                Have them provide their projected <strong>annual</strong> pension amount and enter it below.
+              </div>
+              <div class="q-row">
+                <div class="q-item wide">
+                  <label>Spouse's Annual Pension at Retirement <span class="hint">(from their pension system calculator)</span></label>
+                  <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+                  <input type="number" id="q-spouse-pension-known" placeholder="e.g. 32,000" oninput="calcSpousePension()" style="font-size:1.1rem;font-weight:600;"></div>
+                </div>
+                <div class="q-item" style="display:flex;align-items:flex-end;padding-bottom:2px;">
+                  <div style="background:rgba(42,157,143,0.1);border-radius:10px;padding:10px 14px;width:100%;">
+                    <div style="font-size:0.7rem;color:var(--muted);margin-bottom:3px;font-family:var(--font-mono);">SPOUSE ANNUAL PENSION</div>
+                    <div style="font-size:1.4rem;font-weight:700;color:var(--teal);font-family:var(--font-mono);" id="spouse-pension-own-display">$0</div>
+                    <div style="font-size:0.72rem;color:var(--muted);margin-top:2px;" id="spouse-pension-own-monthly">$0 / month</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="spouse-pension-calc-section" style="display:none">
+              <div class="info-callout">
+                <strong>Pension Formula:</strong> Most public pensions use <strong>Years of Service × Multiplier × Final Average Salary</strong>. Fill in the fields below for an estimate.
+              </div>
+              <div class="q-row">
+                <div class="q-item">
+                  <label>Pension Multiplier <span class="hint">(e.g. 2.0 = 2%)</span></label>
+                  <div class="input-suffix-wrap">
+                  <input type="number" id="q-spouse-pension-mult" placeholder="2.0" step="0.1" value="2.0" oninput="calcSpousePension()">
+                  <span class="input-suffix">%</span></div>
+                </div>
+                <div class="q-item">
+                  <label>Expected Years of Service at Retirement</label>
+                  <input type="number" id="q-spouse-pension-yrs" placeholder="25" oninput="calcSpousePension()">
+                </div>
+                <div class="q-item">
+                  <label>Spouse's Expected Final Salary</label>
+                  <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+                  <input type="number" id="q-spouse-pension-salary" placeholder="55,000" oninput="calcSpousePension()"></div>
+                </div>
+                <div class="q-item" style="display:flex;align-items:flex-end;padding-bottom:2px;">
+                  <div style="background:rgba(42,157,143,0.1);border-radius:10px;padding:10px 14px;width:100%;">
+                    <div style="font-size:0.7rem;color:var(--muted);margin-bottom:3px;font-family:var(--font-mono);">EST. SPOUSE PENSION</div>
+                    <div style="font-size:1.4rem;font-weight:700;color:var(--teal);font-family:var(--font-mono);" id="spouse-pension-calc-display">$0</div>
+                    <div style="font-size:0.72rem;color:var(--muted);margin-top:2px;" id="spouse-pension-calc-monthly">$0 / month</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="q-row" style="margin-top:4px">
+              <div class="q-item full">
+                <label>Does your spouse's pension include a COLA (Cost of Living Adjustment)?</label>
+                <div class="radio-group" id="rg-spouse-cola">
+                  <div class="radio-btn selected" onclick="selectRadio(this,'rg-spouse-cola')">Yes — Fixed % annually</div>
+                  <div class="radio-btn" onclick="selectRadio(this,'rg-spouse-cola')">Yes — CPI-based</div>
+                  <div class="radio-btn" onclick="selectRadio(this,'rg-spouse-cola')">No COLA</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- END SPOUSE PENSION DETAILS -->
+
           <div class="q-row">
             <div class="q-item full">
               <label>Does your spouse pay into Social Security?</label>
@@ -1239,7 +1440,7 @@
           <div class="q-item"><label>Monthly IRA Contribution</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
             <input type="number" id="a-ira-contrib" placeholder="200"></div></div>
-          <div class="q-item"><label>Spouse's Retirement Accounts</label>
+          <div class="q-item" id="spouse-ret-field" style="display:none"><label>Spouse's Retirement Accounts</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
             <input type="number" id="a-spouse-ret" placeholder="40,000"></div></div>
         </div>
@@ -1461,6 +1662,7 @@
         </div>
       </div>
 
+      <div id="spouse-ss-wrapper" style="display:none">
       <div class="q-group" id="spouse-ss-group">
         <div class="q-group-title">Spousal Social Security Strategy</div>
         <div class="info-callout">
@@ -1491,6 +1693,7 @@
         </div>
       </div>
 
+      </div><!-- end spouse-ss-wrapper -->
       <div class="q-group">
         <div class="q-group-title">Healthcare Bridge</div>
         <div class="q-row">
@@ -1666,7 +1869,7 @@
             <label>Life Expectancy Estimate <span class="hint">(plan to age)</span></label>
             <input type="number" id="q-lifeexp" placeholder="90" value="90">
           </div>
-          <div class="q-item">
+          <div class="q-item" id="spouse-lifeexp-field" style="display:none">
             <label>Spouse's Life Expectancy</label>
             <input type="number" id="q-spouse-lifeexp" placeholder="93" value="93">
           </div>
@@ -1885,6 +2088,138 @@ function selectRadio(el, groupId) {
 
 function toggleSpouse(show) {
   document.getElementById('spouse-section').style.display = show ? '' : 'none';
+  const later = ['spouse-ss-wrapper', 'spouse-ret-field', 'spouse-lifeexp-field'];
+  later.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = show ? '' : 'none';
+  });
+}
+
+function handleMaritalStatus(status) {
+  // Hide all conditional sections first
+  document.getElementById('spouse-section').style.display = 'none';
+  document.getElementById('divorced-section').style.display = 'none';
+  document.getElementById('widowed-section').style.display = 'none';
+  const later = ['spouse-ss-wrapper', 'spouse-ret-field', 'spouse-lifeexp-field'];
+  later.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  // Show relevant section
+  if (status === 'married' || status === 'partner') {
+    document.getElementById('spouse-section').style.display = '';
+    later.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = '';
+    });
+  } else if (status === 'divorced') {
+    document.getElementById('divorced-section').style.display = '';
+  } else if (status === 'widowed') {
+    document.getElementById('widowed-section').style.display = '';
+  }
+  // single — nothing extra shown
+}
+
+function checkDivorceEligibility() {
+  const yrs = parseFloat(document.getElementById('q-divorce-marriage-yrs').value) || 0;
+  const exLiving = getRadio('rg-ex-living');
+  const ss67 = parseFloat(document.getElementById('q-ex-ss-67').value) || 0;
+  const result = document.getElementById('divorce-eligibility-result');
+  if (!result) return;
+
+  if (yrs === 0) { result.innerHTML = ''; return; }
+
+  const qualifies = yrs >= 10;
+  const survivorEligible = exLiving.includes('No') && qualifies;
+
+  let html = '';
+  if (qualifies) {
+    const spousalBenefit = ss67 * 0.5;
+    html = `
+    <div style="background:linear-gradient(135deg,rgba(45,154,111,0.1),rgba(42,157,143,0.07));border:2px solid rgba(45,154,111,0.3);border-radius:12px;padding:14px 18px;">
+      <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;color:var(--green);font-weight:700;margin-bottom:6px;font-family:var(--font-mono)">✅ You Appear to Meet the 10-Year Marriage Requirement</div>
+      <p style="font-size:0.83rem;color:var(--slate);line-height:1.65;margin-bottom:8px">
+        Based on your input, you <strong>may qualify</strong> for a divorced spousal Social Security benefit of up to 
+        <strong style="color:var(--teal)">${ss67 > 0 ? '$' + Math.round(spousalBenefit).toLocaleString() + '/mo' : 'up to 50% of your ex-spouse\'s FRA benefit'}</strong> 
+        — provided you are age 62+, currently unmarried, and your own SS benefit is less than this amount.
+        ${survivorEligible ? '<br><br><strong style="color:var(--green)">Since your ex-spouse is deceased, you may also qualify for a survivor benefit of up to 100% of their benefit.</strong>' : ''}
+      </p>
+      <div style="background:rgba(201,168,76,0.12);border-radius:8px;padding:10px 14px;font-size:0.8rem;color:var(--slate);line-height:1.6">
+        <strong style="color:var(--gold)">⚠️ Important:</strong> This estimate is based solely on the information you provided and <strong>does not constitute a government or legal determination</strong> of your eligibility. 
+        We strongly recommend contacting the <strong>Social Security Administration at 1-800-772-1213</strong> or visiting 
+        <a href="https://www.ssa.gov/myaccount/" target="_blank" style="color:var(--teal)">ssa.gov</a> to verify your specific entitlement.
+      </div>
+    </div>`;
+  } else {
+    html = `
+    <div style="background:rgba(244,162,97,0.1);border:1px solid rgba(244,162,97,0.3);border-radius:12px;padding:14px 18px;">
+      <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;color:var(--amber);font-weight:700;margin-bottom:6px;font-family:var(--font-mono)">⚠️ Marriage Length May Not Meet the 10-Year Requirement</div>
+      <p style="font-size:0.83rem;color:var(--slate);line-height:1.65">
+        Divorced spousal SS benefits generally require <strong>at least 10 years of marriage</strong>. 
+        Based on your input of <strong>${yrs} years</strong>, you may not qualify — but we recommend confirming directly with the SSA at <strong>1-800-772-1213</strong> as individual circumstances vary.
+      </p>
+    </div>`;
+  }
+  result.innerHTML = html;
+}
+
+function checkWidowEligibility() {
+  const gpo = getRadio('rg-widow-gpo');
+  const remarried = getRadio('rg-widow-remarried');
+  const deceasedSS = parseFloat(document.getElementById('q-deceased-ss').value) || 0;
+  const survivorBenefit = parseFloat(document.getElementById('q-survivor-benefit').value) || 0;
+  const result = document.getElementById('widow-eligibility-result');
+  if (!result) return;
+
+  const remarriedBefore60 = remarried.includes('before age 60');
+  const gpoAffected = gpo.includes('denied') || gpo.includes('Not Sure');
+  const estimatedBenefit = survivorBenefit > 0 ? survivorBenefit : deceasedSS;
+
+  let html = '';
+  if (remarriedBefore60) {
+    html = `
+    <div style="background:rgba(244,162,97,0.1);border:1px solid rgba(244,162,97,0.3);border-radius:12px;padding:14px 18px;">
+      <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;color:var(--amber);font-weight:700;margin-bottom:6px;font-family:var(--font-mono)">⚠️ Remarriage Before Age 60 May Affect Survivor Benefits</div>
+      <p style="font-size:0.83rem;color:var(--slate);line-height:1.65">
+        Remarrying before age 60 generally disqualifies a surviving spouse from claiming survivor benefits on a deceased ex-spouse's record. 
+        Please contact the SSA at <strong>1-800-772-1213</strong> to discuss your specific situation.
+      </p>
+    </div>`;
+  } else {
+    html = `
+    <div style="background:linear-gradient(135deg,rgba(45,154,111,0.1),rgba(42,157,143,0.07));border:2px solid rgba(45,154,111,0.3);border-radius:12px;padding:14px 18px;">
+      <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;color:var(--green);font-weight:700;margin-bottom:6px;font-family:var(--font-mono)">✅ You Appear to Qualify for Survivor Benefits</div>
+      <p style="font-size:0.83rem;color:var(--slate);line-height:1.65;margin-bottom:8px">
+        Based on your information, you <strong>may be entitled</strong> to a survivor benefit of 
+        <strong style="color:var(--teal)">${estimatedBenefit > 0 ? '$' + Math.round(estimatedBenefit).toLocaleString() + '/mo' : 'up to 100% of your deceased spouse\'s benefit'}</strong>.
+        ${gpoAffected ? '<br><br><strong style="color:var(--green)">🏛️ GPO Repeal:</strong> Since you were previously affected by GPO, the Social Security Fairness Act (Jan 2025) may have restored your full survivor benefit. The SSA is issuing retroactive payments back to January 2024 — contact them to confirm your updated amount.' : ''}
+      </p>
+      <div style="background:rgba(201,168,76,0.12);border-radius:8px;padding:10px 14px;font-size:0.8rem;color:var(--slate);line-height:1.6">
+        <strong style="color:var(--gold)">⚠️ Important Disclaimer:</strong> This estimate is based solely on the information you provided and <strong>does not constitute a government, legal, or financial determination</strong> of your eligibility or benefit amount. 
+        Contact the <strong>Social Security Administration at 1-800-772-1213</strong> or visit 
+        <a href="https://www.ssa.gov/myaccount/" target="_blank" style="color:var(--teal)">ssa.gov/myaccount</a> to verify your official survivor benefit entitlement and any retroactive payments owed.
+      </div>
+    </div>`;
+  }
+  result.innerHTML = html;
+}
+
+function getDivorcedOrWidowSSAnnual() {
+  const status = getRadio('rg-married');
+  if (status.includes('Divorced')) {
+    const yrs = parseFloat(document.getElementById('q-divorce-marriage-yrs').value) || 0;
+    const ss67 = parseFloat(document.getElementById('q-ex-ss-67').value) || 0;
+    if (yrs >= 10 && ss67 > 0) return ss67 * 0.5 * 12;
+  }
+  if (status.includes('Widowed')) {
+    const survivor = parseFloat(document.getElementById('q-survivor-benefit').value) || 0;
+    const deceased = parseFloat(document.getElementById('q-deceased-ss').value) || 0;
+    const remarried = getRadio('rg-widow-remarried');
+    if (!remarried.includes('before age 60')) {
+      return (survivor > 0 ? survivor : deceased) * 12;
+    }
+  }
+  return 0;
 }
 
 function toggleSSSection(show) {
@@ -1893,6 +2228,62 @@ function toggleSSSection(show) {
 
 function toggleWEPRestored(show) {
   document.getElementById('wep-restored-section').style.display = show ? '' : 'none';
+}
+
+function toggleSpousePension(show) {
+  document.getElementById('spouse-pension-section').style.display = show ? '' : 'none';
+}
+
+let spousePensionMode = 'own';
+
+function setSpousePensionMode(mode) {
+  spousePensionMode = mode;
+  const ownBtn  = document.getElementById('spouse-pension-mode-own');
+  const calcBtn = document.getElementById('spouse-pension-mode-calc');
+  const ownSec  = document.getElementById('spouse-pension-own-section');
+  const calcSec = document.getElementById('spouse-pension-calc-section');
+  if (mode === 'own') {
+    ownBtn.style.background  = 'var(--teal)'; ownBtn.style.color = 'white';
+    calcBtn.style.background = 'var(--surface)'; calcBtn.style.color = 'var(--slate)';
+    ownSec.style.display = ''; calcSec.style.display = 'none';
+  } else {
+    calcBtn.style.background = 'var(--teal)'; calcBtn.style.color = 'white';
+    ownBtn.style.background  = 'var(--surface)'; ownBtn.style.color = 'var(--slate)';
+    ownSec.style.display = 'none'; calcSec.style.display = '';
+  }
+  calcSpousePension();
+}
+
+function calcSpousePension() {
+  if (spousePensionMode === 'own') {
+    const known = v('q-spouse-pension-known');
+    const disp  = document.getElementById('spouse-pension-own-display');
+    const mo    = document.getElementById('spouse-pension-own-monthly');
+    if (disp) disp.innerText = known > 0 ? fmt(known) : '$0';
+    if (mo)   mo.innerText   = known > 0 ? fmt(known / 12) + ' / month' : '$0 / month';
+  } else {
+    const mult   = v('q-spouse-pension-mult') / 100 || 0.02;
+    const yrs    = v('q-spouse-pension-yrs') || 0;
+    const salary = v('q-spouse-pension-salary') || 0;
+    const pension = mult * yrs * salary;
+    const disp  = document.getElementById('spouse-pension-calc-display');
+    const mo    = document.getElementById('spouse-pension-calc-monthly');
+    if (disp) disp.innerText = fmt(pension);
+    if (mo)   mo.innerText   = fmt(pension / 12) + ' / month';
+  }
+}
+
+function getSpouseAnnualPension() {
+  const isPublic = getRadio('rg-spouse-public').includes('public');
+  if (!isPublic) return 0;
+  if (spousePensionMode === 'own') {
+    return v('q-spouse-pension-known');
+  } else {
+    const mult   = v('q-spouse-pension-mult') / 100 || 0.02;
+    const yrs    = v('q-spouse-pension-yrs') || 0;
+    const salary = v('q-spouse-pension-salary') || 0;
+    return mult * yrs * salary;
+  }
 }
 
 function calcRestoredSS() {
@@ -2148,7 +2539,11 @@ function generateResults() {
 
   const sideIncome = v('q-side-income') * 12;
   const safeWithdrawal = totalRetireSavings * 0.04;
-  const totalRetireIncome = annualPension + spouseSSAnnual + teacherSSAnnual + safeWithdrawal + sideIncome;
+  const spousePensionAnnual = getSpouseAnnualPension();
+  const divorcedWidowSSAnnual = getDivorcedOrWidowSSAnnual();
+  const teacherTotalIncome = annualPension + teacherSSAnnual + divorcedWidowSSAnnual;
+  const spouseTotalIncome  = spousePensionAnnual + spouseSSAnnual;
+  const totalRetireIncome  = teacherTotalIncome + spouseTotalIncome + safeWithdrawal + sideIncome;
 
   const gap = totalRetireIncome - retireAnnualExp;
   const gapPct = Math.min((totalRetireIncome / retireAnnualExp) * 100, 140);
@@ -2189,20 +2584,33 @@ function generateResults() {
     </div>
   `).join('');
 
+  const spousePensionType = getRadio('rg-spouse-pension-type') || 'Public Pension';
   const rows = [];
-  if (annualPension > 0) rows.push({ source: '🏫 Teacher Pension', type: '<span class="badge badge-green">Guaranteed</span>', note: pensionMode === 'own' ? 'From state TRS calculator' : `${Math.round(pYrs)} yrs × ${(mult*100).toFixed(1)}%`, amount: annualPension });
-  if (teacherSSAnnual > 0) rows.push({ source: '🏛️ Your Social Security', type: '<span class="badge badge-blue">Social Security</span>', note: 'WEP repealed (SSFA 2025)', amount: teacherSSAnnual });
-  if (spouseSSAnnual > 0) rows.push({ source: '👫 Spouse Social Security', type: '<span class="badge badge-blue">Social Security</span>', note: spouseClaim.includes('70') ? 'Delayed to 70 — Max!' : spouseClaim.includes('62') ? 'Early claim — reduced' : 'FRA claim', amount: spouseSSAnnual });
-  if (safeWithdrawal > 0) rows.push({ source: '📈 Portfolio Withdrawal (4%)', type: '<span class="badge badge-amber">Invested</span>', note: `From ${fmtK(totalRetireSavings)} savings`, amount: safeWithdrawal });
-  if (sideIncome > 0) rows.push({ source: '💼 Side Income', type: '<span class="badge badge-amber">Variable</span>', note: 'Part-time / rental', amount: sideIncome });
-  rows.push({ source: '<strong>Total Annual Income</strong>', type: '', note: '', amount: totalRetireIncome, total: true });
+  // Teacher income
+  if (annualPension > 0) rows.push({ source: '🏫 Your Pension', type: '<span class="badge badge-green">Guaranteed</span>', note: pensionMode === 'own' ? 'From state TRS calculator' : `${Math.round(pYrs)} yrs × ${(mult*100).toFixed(1)}%`, amount: annualPension, subtotal: false });
+  if (teacherSSAnnual > 0) rows.push({ source: '🏛️ Your Social Security', type: '<span class="badge badge-blue">Social Security</span>', note: 'WEP repealed (SSFA 2025)', amount: teacherSSAnnual, subtotal: false });
+  if (divorcedWidowSSAnnual > 0) {
+    const marStatus = getRadio('rg-married');
+    const divLabel = marStatus.includes('Widowed') ? '🕊️ Survivor SS Benefit' : '⚖️ Divorced Spousal SS Benefit';
+    const divNote = marStatus.includes('Widowed') ? 'GPO repealed — full survivor benefit' : 'Based on ex-spouse record (10+ yr marriage)';
+    rows.push({ source: divLabel, type: '<span class="badge badge-blue">Social Security</span>', note: divNote, amount: divorcedWidowSSAnnual, subtotal: false });
+  }
+  rows.push({ source: '<strong>📊 Your Total Income</strong>', type: '', note: '', amount: teacherTotalIncome, subtotal: true });
+  // Spouse income
+  if (spousePensionAnnual > 0) rows.push({ source: `👫 Spouse Pension (${spousePensionType.split('—')[0].trim()})`, type: '<span class="badge badge-green">Guaranteed</span>', note: spousePensionMode === 'own' ? 'From pension system calculator' : 'Built-in estimate', amount: spousePensionAnnual, subtotal: false });
+  if (spouseSSAnnual > 0) rows.push({ source: '👫 Spouse Social Security', type: '<span class="badge badge-blue">Social Security</span>', note: spouseClaim.includes('70') ? 'Delayed to 70 — Max!' : spouseClaim.includes('62') ? 'Early claim — reduced' : 'FRA claim', amount: spouseSSAnnual, subtotal: false });
+  if (spousePensionAnnual > 0 || spouseSSAnnual > 0) rows.push({ source: '<strong>📊 Spouse Total Income</strong>', type: '', note: '', amount: spouseTotalIncome, subtotal: true });
+  // Shared
+  if (safeWithdrawal > 0) rows.push({ source: '📈 Portfolio Withdrawal (4%)', type: '<span class="badge badge-amber">Invested</span>', note: `From ${fmtK(totalRetireSavings)} savings`, amount: safeWithdrawal, subtotal: false });
+  if (sideIncome > 0) rows.push({ source: '💼 Side Income', type: '<span class="badge badge-amber">Variable</span>', note: 'Part-time / rental', amount: sideIncome, subtotal: false });
+  rows.push({ source: '<strong>🏠 Total Household Income</strong>', type: '', note: '', amount: totalRetireIncome, total: true });
 
   document.getElementById('income-tbody').innerHTML = rows.map(r => `
-    <tr>
+    <tr style="${r.subtotal ? 'background:rgba(42,157,143,0.06);' : ''}${r.total ? 'background:rgba(42,157,143,0.06);' : ''}">
       <td>${r.source}</td>
       <td>${r.type}</td>
       <td style="font-size:0.78rem;color:var(--muted)">${r.note}</td>
-      <td>${fmt(r.amount)}</td>
+      <td style="font-family:var(--font-mono);font-weight:${r.subtotal || r.total ? '700' : '500'};color:${r.subtotal ? 'var(--teal)' : r.total ? 'var(--ink)' : 'inherit'}">${fmt(r.amount)}</td>
     </tr>
   `).join('');
 
