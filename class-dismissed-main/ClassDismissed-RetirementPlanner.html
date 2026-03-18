@@ -178,9 +178,12 @@
     box-shadow: var(--shadow);
     border: 1px solid var(--border);
     display: none;
+    visibility: hidden;
+    position: relative;
+    isolation: isolate;
     animation: fadeIn 0.35s ease;
   }
-  .section-card.active { display: block; }
+  .section-card.active { display: block; visibility: visible; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
   .section-header {
@@ -2207,8 +2210,19 @@ function buildProgress() {
 
 function goTo(step) {
   if (step === 8) generateResults();
-  document.querySelectorAll('.section-card').forEach(c => c.classList.remove('active'));
-  document.getElementById('step-' + step).classList.add('active');
+  // Remove active from all cards first, ensuring they fully collapse
+  document.querySelectorAll('.section-card').forEach(c => {
+    c.classList.remove('active');
+    c.style.display = 'none';
+    c.style.visibility = 'hidden';
+  });
+  // Activate the target card
+  const target = document.getElementById('step-' + step);
+  if (target) {
+    target.style.display = 'block';
+    target.style.visibility = 'visible';
+    target.classList.add('active');
+  }
   currentStep = step;
   buildProgress();
   window.scrollTo({ top: 0, behavior: 'smooth' });
