@@ -899,11 +899,11 @@
         <div class="q-row">
           <div class="q-item">
             <label>Your Current Age</label>
-            <input type="number" id="q-age" placeholder="e.g. 45" min="22" max="80" oninput="updateSidebar()">
+            <input type="number" id="q-age" placeholder="e.g. 45" min="22" max="90" oninput="updateSidebar()">
           </div>
-          <div class="q-item">
+          <div class="q-item" id="retireage-field">
             <label>Target Retirement Age</label>
-            <input type="number" id="q-retireage" placeholder="e.g. 62" min="50" max="80" oninput="updateSidebar()">
+            <input type="number" id="q-retireage" placeholder="e.g. 62" min="22" max="90" oninput="updateSidebar()">
           </div>
           <div class="q-item">
             <label>State You Teach In</label>
@@ -925,35 +925,41 @@
             </select>
           </div>
         </div>
+
+        <!-- Already Retired checkbox -->
+        <div class="q-row">
+          <div class="q-item full">
+            <label class="checkbox-row" style="cursor:pointer;gap:12px" onclick="toggleAlreadyRetired()">
+              <span id="retired-checkbox"
+                style="width:20px;height:20px;border:2px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:white;transition:all 0.2s;font-size:0.75rem;font-weight:700"></span>
+              <span style="font-size:0.9rem;font-weight:600;color:var(--slate)">I'm already retired 🎓</span>
+              <span class="hint" style="font-weight:400">— skips years-of-service questions and unlocks the exact pension entry</span>
+            </label>
+          </div>
+        </div>
       </div>
+
       <div class="q-group">
         <div class="q-group-title">Teaching Career</div>
-        <div class="q-row">
-          <div class="q-item">
-            <label>Years of Teaching Service <span class="hint">(total creditable)</span></label>
-            <input type="number" id="q-service" placeholder="e.g. 18" min="0" max="50" oninput="updateSidebar()">
-          </div>
-          <div class="q-item">
-            <label>Your Annual Salary <span class="hint">(gross)</span></label>
-            <div class="input-prefix-wrap">
-              <span class="input-prefix">$</span>
-              <input type="number" id="q-salary" placeholder="60,000" oninput="updateSidebar()">
+
+        <!-- Fields hidden when already retired -->
+        <div id="career-service-fields">
+          <div class="q-row">
+            <div class="q-item">
+              <label>Years of Teaching Service <span class="hint">(total creditable)</span></label>
+              <input type="number" id="q-service" placeholder="e.g. 18" min="0" max="50" oninput="updateSidebar()">
             </div>
-          </div>
-          <div class="q-item">
-            <label>Final Average Salary (FAS) <span class="hint">used for pension calculation</span></label>
-            <div class="input-prefix-wrap">
-              <span class="input-prefix">$</span>
-              <input type="number" id="q-salary-retire" placeholder="72,000">
-            </div>
-            <div style="margin-top:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:0.72rem;color:var(--muted);line-height:1.6">
-              Most pensions use your highest 3–5 year salary average, not just your last year. Check your state TRS for the exact formula.
-              <span style="display:block;margin-top:4px;color:var(--muted)">
-                Examples: Ohio STRS · CalSTRS · NY STRS = 3-yr avg &nbsp;·&nbsp; Texas TRS · PSERS (PA) = 5-yr avg &nbsp;·&nbsp; MTRS (MA) = 3-yr avg
-              </span>
+            <div class="q-item">
+              <label>Your Annual Salary <span class="hint">(gross)</span></label>
+              <div class="input-prefix-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="q-salary" placeholder="0" oninput="updateSidebar()">
+              </div>
             </div>
           </div>
         </div>
+        </div><!-- end career-service-fields -->
+
         <div class="q-row">
           <div class="q-item full">
             <label>Does your state teacher pension exempt you from Social Security? <span class="hint">(historically)</span></label>
@@ -1016,17 +1022,17 @@
                 <div class="q-item">
                   <label>Ex-Spouse's Estimated SS at 62 <span class="hint">/mo</span></label>
                   <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-                  <input type="number" id="q-ex-ss-62" placeholder="1,200" oninput="checkDivorceEligibility()"></div>
+                  <input type="number" id="q-ex-ss-62" placeholder="0" oninput="checkDivorceEligibility()"></div>
                 </div>
                 <div class="q-item">
                   <label>Ex-Spouse's Estimated SS at 67 (FRA) <span class="hint">/mo</span></label>
                   <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-                  <input type="number" id="q-ex-ss-67" placeholder="1,800" oninput="checkDivorceEligibility()"></div>
+                  <input type="number" id="q-ex-ss-67" placeholder="0" oninput="checkDivorceEligibility()"></div>
                 </div>
                 <div class="q-item">
                   <label>Ex-Spouse's Estimated SS at 70 <span class="hint">/mo</span></label>
                   <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-                  <input type="number" id="q-ex-ss-70" placeholder="2,300" oninput="checkDivorceEligibility()"></div>
+                  <input type="number" id="q-ex-ss-70" placeholder="0" oninput="checkDivorceEligibility()"></div>
                 </div>
               </div>
               <div id="divorce-eligibility-result" style="margin-top:8px"></div>
@@ -1066,12 +1072,12 @@
                 <div class="q-item">
                   <label>Deceased Spouse's SS Benefit at Time of Death <span class="hint">/mo</span></label>
                   <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-                  <input type="number" id="q-deceased-ss" placeholder="1,800" oninput="checkWidowEligibility()"></div>
+                  <input type="number" id="q-deceased-ss" placeholder="0" oninput="checkWidowEligibility()"></div>
                 </div>
                 <div class="q-item">
                   <label>Your Current or Estimated Survivor Benefit <span class="hint">/mo, if known</span></label>
                   <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-                  <input type="number" id="q-survivor-benefit" placeholder="1,800" oninput="checkWidowEligibility()"></div>
+                  <input type="number" id="q-survivor-benefit" placeholder="0" oninput="checkWidowEligibility()"></div>
                 </div>
               </div>
               <div id="widow-eligibility-result" style="margin-top:8px"></div>
@@ -1088,7 +1094,7 @@
               <label>Spouse's Annual Income</label>
               <div class="input-prefix-wrap">
                 <span class="input-prefix">$</span>
-                <input type="number" id="q-spouse-income" placeholder="55,000" oninput="updateSidebar()">
+                <input type="number" id="q-spouse-income" placeholder="0" oninput="updateSidebar()">
               </div>
             </div>
           </div>
@@ -1135,7 +1141,7 @@
                 <div class="q-item wide">
                   <label>Spouse's Annual Pension at Retirement <span class="hint">(from their pension system calculator)</span></label>
                   <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-                  <input type="number" id="q-spouse-pension-known" placeholder="e.g. 32,000" oninput="calcSpousePension()" style="font-size:1.1rem;font-weight:600;"></div>
+                  <input type="number" id="q-spouse-pension-known" placeholder="0" oninput="calcSpousePension()" style="font-size:1.1rem;font-weight:600;"></div>
                 </div>
                 <div class="q-item" style="display:flex;align-items:flex-end;padding-bottom:2px;">
                   <div style="background:rgba(42,157,143,0.1);border-radius:10px;padding:10px 14px;width:100%;">
@@ -1164,7 +1170,7 @@
                 <div class="q-item">
                   <label>Spouse's Expected Final Salary</label>
                   <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-                  <input type="number" id="q-spouse-pension-salary" placeholder="55,000" oninput="calcSpousePension()"></div>
+                  <input type="number" id="q-spouse-pension-salary" placeholder="0" oninput="calcSpousePension()"></div>
                 </div>
                 <div class="q-item" style="display:flex;align-items:flex-end;padding-bottom:2px;">
                   <div style="background:rgba(42,157,143,0.1);border-radius:10px;padding:10px 14px;width:100%;">
@@ -1202,21 +1208,21 @@
               <label>Spouse's Expected SS at 62</label>
               <div class="input-prefix-wrap">
                 <span class="input-prefix">$</span>
-                <input type="number" id="q-spouse-ss62" placeholder="1,200" >
+                <input type="number" id="q-spouse-ss62" placeholder="0" >
               </div>
             </div>
             <div class="q-item">
               <label>Spouse's Expected SS at 67 (FRA)</label>
               <div class="input-prefix-wrap">
                 <span class="input-prefix">$</span>
-                <input type="number" id="q-spouse-ss67" placeholder="1,700">
+                <input type="number" id="q-spouse-ss67" placeholder="0">
               </div>
             </div>
             <div class="q-item">
               <label>Spouse's Expected SS at 70</label>
               <div class="input-prefix-wrap">
                 <span class="input-prefix">$</span>
-                <input type="number" id="q-spouse-ss70" placeholder="2,200">
+                <input type="number" id="q-spouse-ss70" placeholder="0">
               </div>
             </div>
           </div>
@@ -1242,22 +1248,36 @@
           <div class="q-item">
             <label>Mortgage / Rent <span class="hint">/mo</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-mortgage" placeholder="1,500" oninput="calcExpenses()"></div>
+            <input type="number" id="e-mortgage" placeholder="0" oninput="calcExpenses()"></div>
           </div>
           <div class="q-item">
-            <label>Property Taxes <span class="hint">/mo</span></label>
+            <label>Property Taxes
+              <span style="margin-left:6px;display:inline-flex;border:1.5px solid var(--border);border-radius:20px;overflow:hidden;vertical-align:middle">
+                <button type="button" id="proptax-mo-btn" onclick="setTaxMode('proptax','mo')"
+                  style="padding:2px 10px;border:none;cursor:pointer;font-size:0.7rem;font-weight:700;background:var(--teal);color:white;transition:all 0.15s">/mo</button>
+                <button type="button" id="proptax-yr-btn" onclick="setTaxMode('proptax','yr')"
+                  style="padding:2px 10px;border:none;cursor:pointer;font-size:0.7rem;font-weight:600;background:transparent;color:var(--muted);transition:all 0.15s">/yr</button>
+              </span>
+            </label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-proptax" placeholder="300" oninput="calcExpenses()"></div>
+            <input type="number" id="e-proptax" placeholder="0" oninput="calcExpenses()"></div>
           </div>
           <div class="q-item">
-            <label>Home Insurance <span class="hint">/mo</span></label>
+            <label>Home Insurance
+              <span style="margin-left:6px;display:inline-flex;border:1.5px solid var(--border);border-radius:20px;overflow:hidden;vertical-align:middle">
+                <button type="button" id="homeins-mo-btn" onclick="setTaxMode('homeins','mo')"
+                  style="padding:2px 10px;border:none;cursor:pointer;font-size:0.7rem;font-weight:700;background:var(--teal);color:white;transition:all 0.15s">/mo</button>
+                <button type="button" id="homeins-yr-btn" onclick="setTaxMode('homeins','yr')"
+                  style="padding:2px 10px;border:none;cursor:pointer;font-size:0.7rem;font-weight:600;background:transparent;color:var(--muted);transition:all 0.15s">/yr</button>
+              </span>
+            </label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-homeins" placeholder="150" oninput="calcExpenses()"></div>
+            <input type="number" id="e-homeins" placeholder="0" oninput="calcExpenses()"></div>
           </div>
           <div class="q-item">
             <label>Utilities <span class="hint">/mo</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-utilities" placeholder="250" oninput="calcExpenses()"></div>
+            <input type="number" id="e-utilities" placeholder="0" oninput="calcExpenses()"></div>
           </div>
         </div>
         <div class="q-row">
@@ -1269,7 +1289,7 @@
           <div class="q-item">
             <label>Maintenance / Repairs <span class="hint">/mo avg</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-maint" placeholder="100" oninput="calcExpenses()"></div>
+            <input type="number" id="e-maint" placeholder="0" oninput="calcExpenses()"></div>
           </div>
         </div>
       </div>
@@ -1279,16 +1299,16 @@
         <div class="q-row">
           <div class="q-item"><label>Car Payment(s) <span class="hint">/mo</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-carpay" placeholder="400" oninput="calcExpenses()"></div></div>
+            <input type="number" id="e-carpay" placeholder="0" oninput="calcExpenses()"></div></div>
           <div class="q-item"><label>Gas & Fuel <span class="hint">/mo</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-gas" placeholder="150" oninput="calcExpenses()"></div></div>
+            <input type="number" id="e-gas" placeholder="0" oninput="calcExpenses()"></div></div>
           <div class="q-item"><label>Auto Insurance <span class="hint">/mo</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-autoins" placeholder="120" oninput="calcExpenses()"></div></div>
+            <input type="number" id="e-autoins" placeholder="0" oninput="calcExpenses()"></div></div>
           <div class="q-item"><label>Other Transport <span class="hint">/mo</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-transport" placeholder="50" oninput="calcExpenses()"></div></div>
+            <input type="number" id="e-transport" placeholder="0" oninput="calcExpenses()"></div></div>
         </div>
       </div>
 
@@ -1297,30 +1317,30 @@
         <div class="q-row">
           <div class="q-item"><label>Groceries <span class="hint">/mo</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-food" placeholder="600" oninput="calcExpenses()"></div></div>
+            <input type="number" id="e-food" placeholder="0" oninput="calcExpenses()"></div></div>
           <div class="q-item"><label>Dining Out <span class="hint">/mo</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-dining" placeholder="200" oninput="calcExpenses()"></div></div>
+            <input type="number" id="e-dining" placeholder="0" oninput="calcExpenses()"></div></div>
           <div class="q-item"><label>Healthcare / Medical <span class="hint">/mo</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-health" placeholder="300" oninput="calcExpenses()"></div></div>
+            <input type="number" id="e-health" placeholder="0" oninput="calcExpenses()"></div></div>
           <div class="q-item"><label>Subscriptions / Entertainment <span class="hint">/mo</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-ent" placeholder="100" oninput="calcExpenses()"></div></div>
+            <input type="number" id="e-ent" placeholder="0" oninput="calcExpenses()"></div></div>
         </div>
         <div class="q-row">
           <div class="q-item"><label>Clothing <span class="hint">/mo avg</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-clothing" placeholder="100" oninput="calcExpenses()"></div></div>
+            <input type="number" id="e-clothing" placeholder="0" oninput="calcExpenses()"></div></div>
           <div class="q-item"><label>Travel / Vacation <span class="hint">/mo avg</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-travel" placeholder="200" oninput="calcExpenses()"></div></div>
+            <input type="number" id="e-travel" placeholder="0" oninput="calcExpenses()"></div></div>
           <div class="q-item"><label>Charitable Giving <span class="hint">/mo</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-charity" placeholder="50" oninput="calcExpenses()"></div></div>
+            <input type="number" id="e-charity" placeholder="0" oninput="calcExpenses()"></div></div>
           <div class="q-item"><label>Other / Miscellaneous <span class="hint">/mo</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="e-misc" placeholder="150" oninput="calcExpenses()"></div></div>
+            <input type="number" id="e-misc" placeholder="0" oninput="calcExpenses()"></div></div>
         </div>
       </div>
 
@@ -1379,12 +1399,12 @@
           <div class="q-item">
             <label>Original Mortgage Amount</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="q-mortgage-orig" placeholder="250,000"></div>
+            <input type="number" id="q-mortgage-orig" placeholder="0"></div>
           </div>
           <div class="q-item">
             <label>Current Balance</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="q-mortgage-bal" placeholder="180,000"></div>
+            <input type="number" id="q-mortgage-bal" placeholder="0"></div>
           </div>
           <div class="q-item">
             <label>Years Remaining</label>
@@ -1395,7 +1415,7 @@
           <div class="q-item">
             <label>Monthly Payment</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="q-mortgage-pmt" placeholder="1,500"></div>
+            <input type="number" id="q-mortgage-pmt" placeholder="0"></div>
           </div>
         </div>
       </div>
@@ -1419,16 +1439,16 @@
         <div class="q-row">
           <div class="q-item"><label>403(b) Balance <span class="hint">(Teacher plan)</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="a-403b" placeholder="85,000" oninput="updateSidebar()"></div></div>
+            <input type="number" id="a-403b" placeholder="0" oninput="updateSidebar()"></div></div>
           <div class="q-item"><label>Monthly 403(b) Contribution</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="a-403b-contrib" placeholder="400"></div></div>
+            <input type="number" id="a-403b-contrib" placeholder="0"></div></div>
           <div class="q-item"><label>457(b) Balance <span class="hint">(Deferred comp)</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="a-457b" placeholder="25,000"></div></div>
+            <input type="number" id="a-457b" placeholder="0"></div></div>
           <div class="q-item"><label>Monthly 457(b) Contribution</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="a-457b-contrib" placeholder="200"></div></div>
+            <input type="number" id="a-457b-contrib" placeholder="0"></div></div>
         </div>
         <div class="q-row">
           <div class="q-item"><label>Traditional IRA Balance</label>
@@ -1436,21 +1456,18 @@
             <input type="number" id="a-ira" placeholder="0"></div></div>
           <div class="q-item"><label>Roth IRA Balance</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="a-roth" placeholder="15,000"></div></div>
+            <input type="number" id="a-roth" placeholder="0"></div></div>
           <div class="q-item"><label>Monthly IRA Contribution</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="a-ira-contrib" placeholder="200"></div></div>
-          <div class="q-item" id="spouse-ret-field" style="display:none"><label>Spouse's Retirement Accounts</label>
-            <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="a-spouse-ret" placeholder="40,000"></div></div>
+            <input type="number" id="a-ira-contrib" placeholder="0"></div></div>
         </div>
         <div class="q-row">
           <div class="q-item"><label>HSA Balance <span class="hint">(Health Savings Account)</span></label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="q-hsa-bal" placeholder="8,000"></div></div>
+            <input type="number" id="q-hsa-bal" placeholder="0"></div></div>
           <div class="q-item"><label>Monthly HSA Contribution</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="a-hsa-contrib" placeholder="275"></div></div>
+            <input type="number" id="a-hsa-contrib" placeholder="0"></div></div>
           <div class="q-item" style="display:flex;align-items:flex-end;padding-bottom:2px;">
             <div style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);border-radius:10px;padding:10px 14px;width:100%;">
               <div style="font-size:0.7rem;color:var(--muted);margin-bottom:3px;font-family:var(--font-mono);">2025 HSA LIMITS</div>
@@ -1474,24 +1491,103 @@
         <div class="q-row">
           <div class="q-item"><label>Savings / Checking Accounts</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="a-savings" placeholder="20,000"></div></div>
+            <input type="number" id="a-savings" placeholder="0"></div></div>
           <div class="q-item"><label>Taxable Brokerage / Investments</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="a-brokerage" placeholder="10,000"></div></div>
+            <input type="number" id="a-brokerage" placeholder="0"></div></div>
           <div class="q-item"><label>Estimated Home Equity</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="a-equity" placeholder="120,000"></div></div>
+            <input type="number" id="a-equity" placeholder="0"></div></div>
           <div class="q-item"><label>Other Assets (rental, etc.)</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
             <input type="number" id="a-other" placeholder="0"></div></div>
         </div>
       </div>
 
+      <!-- SPOUSE ASSETS — shown only when married/partner -->
+      <div class="q-group" id="spouse-assets-group" style="display:none">
+        <div class="q-group-title">Spouse / Partner Assets &amp; Savings</div>
+        <div class="info-callout">
+          Enter your spouse's or partner's investment accounts so they're included in the household portfolio projection and final report.
+        </div>
+
+        <div class="q-row">
+          <div class="q-item">
+            <label>Spouse's 401(k) / 403(b) Balance</label>
+            <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+            <input type="number" id="a-spouse-401k" placeholder="0" oninput="updateSidebar()"></div>
+          </div>
+          <div class="q-item">
+            <label>Monthly Contribution to 401(k)/403(b)</label>
+            <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+            <input type="number" id="a-spouse-401k-contrib" placeholder="0" oninput="updateSidebar()"></div>
+          </div>
+          <div class="q-item">
+            <label>Spouse's 457(b) / Deferred Comp</label>
+            <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+            <input type="number" id="a-spouse-457b" placeholder="0" oninput="updateSidebar()"></div>
+          </div>
+          <div class="q-item">
+            <label>Monthly 457(b) Contribution</label>
+            <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+            <input type="number" id="a-spouse-457b-contrib" placeholder="0" oninput="updateSidebar()"></div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-item">
+            <label>Spouse's Traditional IRA</label>
+            <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+            <input type="number" id="a-spouse-ira" placeholder="0" oninput="updateSidebar()"></div>
+          </div>
+          <div class="q-item">
+            <label>Spouse's Roth IRA</label>
+            <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+            <input type="number" id="a-spouse-roth" placeholder="0" oninput="updateSidebar()"></div>
+          </div>
+          <div class="q-item">
+            <label>Monthly IRA / Roth Contribution</label>
+            <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+            <input type="number" id="a-spouse-ira-contrib" placeholder="0" oninput="updateSidebar()"></div>
+          </div>
+          <div class="q-item">
+            <label>Spouse's HSA Balance</label>
+            <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+            <input type="number" id="a-spouse-hsa" placeholder="0" oninput="updateSidebar()"></div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-item">
+            <label>Spouse's Taxable Brokerage / Investments</label>
+            <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+            <input type="number" id="a-spouse-brokerage" placeholder="0" oninput="updateSidebar()"></div>
+          </div>
+          <div class="q-item">
+            <label>Spouse's Savings / Checking</label>
+            <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+            <input type="number" id="a-spouse-savings" placeholder="0" oninput="updateSidebar()"></div>
+          </div>
+          <div class="q-item" style="display:flex;align-items:flex-end;padding-bottom:2px;">
+            <div style="background:rgba(42,157,143,0.1);border-radius:10px;padding:10px 14px;width:100%;">
+              <div style="font-size:0.7rem;color:var(--muted);margin-bottom:3px;font-family:var(--font-mono);">SPOUSE TOTAL ASSETS</div>
+              <div style="font-size:1.4rem;font-weight:700;color:var(--teal);font-family:var(--font-mono);" id="spouse-assets-total">$0</div>
+              <div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">current balances</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END SPOUSE ASSETS -->
+
       <div class="q-group">
         <div class="q-group-title">Annual Pension at Retirement</div>
 
         <!-- MODE TOGGLE -->
-        <div style="display:flex;gap:0;border:2px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:18px;max-width:520px">
+        <div style="display:flex;gap:0;border:2px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:18px;max-width:620px">
+          <button id="pension-mode-retired" onclick="setPensionMode('retired')"
+            style="flex:1;padding:11px 16px;border:none;cursor:pointer;font-family:var(--font-body);font-size:0.85rem;font-weight:600;background:var(--surface);color:var(--slate);transition:all 0.2s">
+            🎓 Already Retired
+          </button>
           <button id="pension-mode-own" onclick="setPensionMode('own')"
             style="flex:1;padding:11px 16px;border:none;cursor:pointer;font-family:var(--font-body);font-size:0.85rem;font-weight:700;background:var(--teal);color:white;transition:all 0.2s">
             ✏️ I'll Enter My Own Amount
@@ -1500,6 +1596,41 @@
             style="flex:1;padding:11px 16px;border:none;cursor:pointer;font-family:var(--font-body);font-size:0.85rem;font-weight:600;background:var(--surface);color:var(--slate);transition:all 0.2s">
             🧮 Use Built-In Estimator
           </button>
+        </div>
+
+        <!-- ALREADY RETIRED MODE -->
+        <div id="pension-retired-section" style="display:none">
+          <div style="background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(42,157,143,0.07));border:2px solid rgba(201,168,76,0.35);border-radius:12px;padding:16px 18px;margin-bottom:16px;font-size:0.83rem;color:var(--slate);line-height:1.65">
+            🎓 <strong style="color:var(--gold)">Welcome, retired teacher!</strong> Enter your actual pension below — no estimation needed.
+            Your check stub or award letter from your state retirement system will show the exact gross annual or monthly amount.
+          </div>
+          <div class="q-row">
+            <div class="q-item">
+              <label>How is your pension paid?</label>
+              <div class="radio-group" id="rg-retired-pension-freq" style="margin-top:6px">
+                <div class="radio-btn selected" onclick="selectRadio(this,'rg-retired-pension-freq');calcRetiredPension()">Annual amount</div>
+                <div class="radio-btn" onclick="selectRadio(this,'rg-retired-pension-freq');calcRetiredPension()">Monthly amount</div>
+              </div>
+            </div>
+          </div>
+          <div class="q-row">
+            <div class="q-item wide">
+              <label id="retired-pension-label">Your Exact Annual Pension <span class="hint">(gross, before taxes)</span></label>
+              <div class="input-prefix-wrap"><span class="input-prefix">$</span>
+              <input type="number" id="q-pension-retired" placeholder="0" oninput="calcRetiredPension()" style="font-size:1.15rem;font-weight:700;border-color:var(--gold);"></div>
+            </div>
+            <div class="q-item" style="display:flex;align-items:flex-end;padding-bottom:2px;">
+              <div style="background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(42,157,143,0.08));border:1px solid rgba(201,168,76,0.3);border-radius:10px;padding:10px 14px;width:100%;">
+                <div style="font-size:0.7rem;color:var(--muted);margin-bottom:3px;font-family:var(--font-mono);">YOUR ANNUAL PENSION</div>
+                <div style="font-size:1.5rem;font-weight:700;color:var(--gold);font-family:var(--font-mono);" id="pension-retired-annual-display">$0</div>
+                <div style="font-size:0.72rem;color:var(--muted);margin-top:2px;" id="pension-retired-monthly-display">$0 / month</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:4px;font-size:0.78rem;color:var(--muted);line-height:1.6;padding:0 2px">
+            <strong style="color:var(--slate)">Where to find this:</strong>
+            Your annual pension award letter · Monthly retirement check stub · State TRS member portal (e.g. mySTRS, myCalSTRS, myNYSTRS)
+          </div>
         </div>
 
         <!-- OWN ENTRY MODE -->
@@ -1514,7 +1645,7 @@
             <div class="q-item wide">
               <label>My Annual Pension at Retirement <span class="hint">(from state TRS calculator or estimate)</span></label>
               <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-              <input type="number" id="q-pension-known" placeholder="e.g. 42,000" oninput="calcPension()" style="font-size:1.1rem;font-weight:600;"></div>
+              <input type="number" id="q-pension-known" placeholder="0" oninput="calcPension()" style="font-size:1.1rem;font-weight:600;"></div>
             </div>
             <div class="q-item" style="display:flex;align-items:flex-end;padding-bottom:2px;">
               <div style="background:rgba(42,157,143,0.1);border-radius:10px;padding:10px 14px;width:100%;">
@@ -1614,13 +1745,13 @@
           <div class="q-row">
             <div class="q-item"><label>Your SS Benefit at Age 62 <span class="hint">/mo</span></label>
               <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-              <input type="number" id="q-ss-62" placeholder="900"></div></div>
+              <input type="number" id="q-ss-62" placeholder="0"></div></div>
             <div class="q-item"><label>Your SS Benefit at Age 67 (FRA) <span class="hint">/mo</span></label>
               <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-              <input type="number" id="q-ss-67" placeholder="1,400"></div></div>
+              <input type="number" id="q-ss-67" placeholder="0"></div></div>
             <div class="q-item"><label>Your SS Benefit at Age 70 <span class="hint">/mo</span></label>
               <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-              <input type="number" id="q-ss-70" placeholder="1,750"></div></div>
+              <input type="number" id="q-ss-70" placeholder="0"></div></div>
           </div>
         </div>
 
@@ -1648,10 +1779,10 @@
           <div class="q-row" style="margin-top:12px">
             <div class="q-item"><label>Estimated restored SS benefit at FRA <span class="hint">/mo (if known)</span></label>
               <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-              <input type="number" id="q-ss-restored" placeholder="e.g. 800" oninput="calcRestoredSS()"></div></div>
+              <input type="number" id="q-ss-restored" placeholder="0" oninput="calcRestoredSS()"></div></div>
             <div class="q-item"><label>Previous (reduced) SS benefit at FRA <span class="hint">/mo</span></label>
               <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-              <input type="number" id="q-ss-old" placeholder="e.g. 300" oninput="calcRestoredSS()"></div></div>
+              <input type="number" id="q-ss-old" placeholder="0" oninput="calcRestoredSS()"></div></div>
             <div class="q-item" style="display:flex;align-items:flex-end;padding-bottom:2px">
               <div style="background:rgba(45,154,111,0.1);border-radius:10px;padding:10px 14px;width:100%">
                 <div style="font-size:0.7rem;color:var(--muted);margin-bottom:2px;font-family:var(--font-mono)">ANNUAL BENEFIT GAIN</div>
@@ -1709,7 +1840,7 @@
         <div class="q-row">
           <div class="q-item"><label>Estimated monthly healthcare cost in retirement</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="q-health-retire" placeholder="600"></div></div>
+            <input type="number" id="q-health-retire" placeholder="0"></div></div>
           <div class="q-item" style="display:flex;align-items:flex-end;padding-bottom:2px;">
             <div style="background:rgba(42,157,143,0.07);border-radius:10px;padding:10px 14px;width:100%;font-size:0.82rem;color:var(--slate);line-height:1.5">
               Your HSA balance &amp; contributions were entered in Step 4 — they will be projected forward to help cover these retirement healthcare costs.
@@ -1839,7 +1970,7 @@
           <div class="q-item">
             <label>Target inheritance amount</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="q-inherit" placeholder="100,000"></div>
+            <input type="number" id="q-inherit" placeholder="0"></div>
           </div>
         </div>
       </div>
@@ -1891,7 +2022,7 @@
           <div class="q-item">
             <label>Estimated monthly side income in retirement</label>
             <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-            <input type="number" id="q-side-income" placeholder="500"></div>
+            <input type="number" id="q-side-income" placeholder="0"></div>
           </div>
         </div>
       </div>
@@ -1971,9 +2102,15 @@
         <div id="tax-tips-box"></div>
       </div>
 
+      <!-- SPOUSE ASSETS BREAKDOWN (shown only when spouse data entered) -->
+      <div class="result-section" id="spouse-assets-report-section" style="display:none">
+        <h3><span>👫</span> Spouse / Partner Assets Breakdown</h3>
+        <div id="spouse-assets-report-box"></div>
+      </div>
+
       <!-- PROJECTED SAVINGS GROWTH -->
       <div class="result-section">
-        <h3><span>📈</span> Projected Savings at Retirement</h3>
+        <h3><span>📈</span> Projected Household Savings at Retirement</h3>
         <div id="savings-growth-box"></div>
       </div>
 
@@ -2100,11 +2237,13 @@ function handleMaritalStatus(status) {
   document.getElementById('spouse-section').style.display = 'none';
   document.getElementById('divorced-section').style.display = 'none';
   document.getElementById('widowed-section').style.display = 'none';
-  const later = ['spouse-ss-wrapper', 'spouse-ret-field', 'spouse-lifeexp-field'];
+  const later = ['spouse-ss-wrapper', 'spouse-lifeexp-field'];
   later.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
+  const spouseAssetsEl = document.getElementById('spouse-assets-group');
+  if (spouseAssetsEl) spouseAssetsEl.style.display = 'none';
   // Show relevant section
   if (status === 'married' || status === 'partner') {
     document.getElementById('spouse-section').style.display = '';
@@ -2112,6 +2251,7 @@ function handleMaritalStatus(status) {
       const el = document.getElementById(id);
       if (el) el.style.display = '';
     });
+    if (spouseAssetsEl) spouseAssetsEl.style.display = '';
   } else if (status === 'divorced') {
     document.getElementById('divorced-section').style.display = '';
   } else if (status === 'widowed') {
@@ -2337,16 +2477,42 @@ function addDebt() {
     <div>
       <label>Balance</label>
       <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-      <input type="number" placeholder="15,000" style="width:100%"></div>
+      <input type="number" placeholder="0" style="width:100%"></div>
     </div>
     <div>
       <label>Monthly Payment</label>
       <div class="input-prefix-wrap"><span class="input-prefix">$</span>
-      <input type="number" placeholder="350" style="width:100%"></div>
+      <input type="number" placeholder="0" style="width:100%"></div>
     </div>
     <button class="del-btn" onclick="document.getElementById('debt-${id}').remove()">✕</button>
   `;
   list.appendChild(div);
+}
+
+// ============================
+// ANNUAL/MONTHLY TOGGLE (property tax & home insurance)
+// ============================
+const taxModes = { proptax: 'mo', homeins: 'mo' };
+
+function setTaxMode(field, mode) {
+  taxModes[field] = mode;
+  const moBtn = document.getElementById(field + '-mo-btn');
+  const yrBtn = document.getElementById(field + '-yr-btn');
+  if (mode === 'mo') {
+    moBtn.style.background = 'var(--teal)'; moBtn.style.color = 'white';
+    yrBtn.style.background = 'transparent'; yrBtn.style.color = 'var(--muted)';
+  } else {
+    yrBtn.style.background = 'var(--teal)'; yrBtn.style.color = 'white';
+    moBtn.style.background = 'transparent'; moBtn.style.color = 'var(--muted)';
+  }
+  calcExpenses();
+}
+
+function getMonthlyValue(fieldId) {
+  const raw = v(fieldId);
+  if (fieldId === 'e-proptax' && taxModes.proptax === 'yr') return raw / 12;
+  if (fieldId === 'e-homeins' && taxModes.homeins === 'yr') return raw / 12;
+  return raw;
 }
 
 // ============================
@@ -2356,7 +2522,7 @@ function calcExpenses() {
   const fields = ['e-mortgage','e-proptax','e-homeins','e-utilities','e-hoa','e-maint',
                   'e-carpay','e-gas','e-autoins','e-transport',
                   'e-food','e-dining','e-health','e-ent','e-clothing','e-travel','e-charity','e-misc'];
-  const total = fields.reduce((sum, f) => sum + v(f), 0);
+  const total = fields.reduce((sum, f) => sum + getMonthlyValue(f), 0);
   const pct = v('retire-spend-pct') / 100 || 0.8;
   document.getElementById('total-monthly').innerText = fmt(total);
   document.getElementById('total-annual').innerText = fmt(total * 12);
@@ -2365,33 +2531,98 @@ function calcExpenses() {
 }
 
 // ============================
+// ALREADY RETIRED TOGGLE
+// ============================
+let alreadyRetired = false;
+
+function toggleAlreadyRetired() {
+  alreadyRetired = !alreadyRetired;
+  const check       = document.getElementById('retired-checkbox');
+  const serviceEl   = document.getElementById('career-service-fields');
+  const retireField = document.getElementById('retireage-field');
+  const retireInput = document.getElementById('q-retireage');
+
+  if (alreadyRetired) {
+    check.style.background  = 'var(--gold)';
+    check.style.borderColor = 'var(--gold)';
+    check.innerHTML         = '✓';
+    if (serviceEl)   serviceEl.style.display   = 'none';
+    if (retireField) retireField.style.display  = 'none';
+    if (retireInput && v('q-age')) retireInput.value = v('q-age');
+    setPensionMode('retired');
+  } else {
+    check.style.background  = 'white';
+    check.style.borderColor = 'var(--border)';
+    check.innerHTML         = '';
+    if (serviceEl)   serviceEl.style.display   = '';
+    if (retireField) retireField.style.display  = '';
+    if (retireInput) retireInput.value = '';
+    setPensionMode('own');
+  }
+  updateSidebar();
+}
+
+function calcRetiredPension() {
+  const freq = getRadio('rg-retired-pension-freq');
+  const raw  = v('q-pension-retired');
+  const label = document.getElementById('retired-pension-label');
+  let annual, monthly;
+  if (freq.includes('Monthly')) {
+    monthly = raw;
+    annual  = raw * 12;
+    if (label) label.innerHTML = 'Your Exact <strong>Monthly</strong> Pension <span class="hint">(gross, before taxes)</span>';
+  } else {
+    annual  = raw;
+    monthly = raw / 12;
+    if (label) label.innerHTML = 'Your Exact <strong>Annual</strong> Pension <span class="hint">(gross, before taxes)</span>';
+  }
+  const annDisp = document.getElementById('pension-retired-annual-display');
+  const moDisp  = document.getElementById('pension-retired-monthly-display');
+  if (annDisp) annDisp.innerText = annual > 0 ? fmt(annual) : '$0';
+  if (moDisp)  moDisp.innerText  = monthly > 0 ? fmt(monthly) + ' / month' : '$0 / month';
+  updateSidebar();
+}
+
+function getRetiredPensionAnnual() {
+  if (pensionMode !== 'retired') return 0;
+  const freq = getRadio('rg-retired-pension-freq');
+  const raw  = v('q-pension-retired');
+  return freq.includes('Monthly') ? raw * 12 : raw;
+}
+
+// ============================
 // PENSION MODE TOGGLE
 // ============================
-let pensionMode = 'own'; // 'own' | 'calc'
+let pensionMode = 'own'; // 'own' | 'calc' | 'retired'
 
 function setPensionMode(mode) {
   pensionMode = mode;
-  const ownBtn  = document.getElementById('pension-mode-own');
-  const calcBtn = document.getElementById('pension-mode-calc');
-  const ownSec  = document.getElementById('pension-own-section');
-  const calcSec = document.getElementById('pension-calc-section');
+  const retiredBtn = document.getElementById('pension-mode-retired');
+  const ownBtn     = document.getElementById('pension-mode-own');
+  const calcBtn    = document.getElementById('pension-mode-calc');
+  const retiredSec = document.getElementById('pension-retired-section');
+  const ownSec     = document.getElementById('pension-own-section');
+  const calcSec    = document.getElementById('pension-calc-section');
 
-  if (mode === 'own') {
-    ownBtn.style.background  = 'var(--teal)';
-    ownBtn.style.color       = 'white';
-    calcBtn.style.background = 'var(--surface)';
-    calcBtn.style.color      = 'var(--slate)';
-    ownSec.style.display     = '';
-    calcSec.style.display    = 'none';
+  // Reset all buttons
+  [retiredBtn, ownBtn, calcBtn].forEach(b => {
+    if (b) { b.style.background = 'var(--surface)'; b.style.color = 'var(--slate)'; b.style.fontWeight = '600'; }
+  });
+  [retiredSec, ownSec, calcSec].forEach(s => { if (s) s.style.display = 'none'; });
+
+  if (mode === 'retired') {
+    if (retiredBtn) { retiredBtn.style.background = 'var(--gold)'; retiredBtn.style.color = 'var(--ink)'; retiredBtn.style.fontWeight = '700'; }
+    if (retiredSec) retiredSec.style.display = '';
+    calcRetiredPension();
+  } else if (mode === 'own') {
+    if (ownBtn) { ownBtn.style.background = 'var(--teal)'; ownBtn.style.color = 'white'; ownBtn.style.fontWeight = '700'; }
+    if (ownSec) ownSec.style.display = '';
+    calcPension();
   } else {
-    calcBtn.style.background = 'var(--teal)';
-    calcBtn.style.color      = 'white';
-    ownBtn.style.background  = 'var(--surface)';
-    ownBtn.style.color       = 'var(--slate)';
-    ownSec.style.display     = 'none';
-    calcSec.style.display    = '';
+    if (calcBtn) { calcBtn.style.background = 'var(--teal)'; calcBtn.style.color = 'white'; calcBtn.style.fontWeight = '700'; }
+    if (calcSec) calcSec.style.display = '';
+    calcPension();
   }
-  calcPension();
 }
 
 // ============================
@@ -2427,18 +2658,25 @@ function updateSidebar() {
   document.getElementById('sb-retire').innerText = retireAge ? 'Age ' + retireAge : '—';
   document.getElementById('sb-yrs').innerText = (age && retireAge && retireAge > age) ? (retireAge - age) + ' yrs' : '—';
 
+  // Update spouse assets live total
+  const spouseTotal = v('a-spouse-401k') + v('a-spouse-457b') + v('a-spouse-ira') + v('a-spouse-roth') + v('a-spouse-hsa') + v('a-spouse-brokerage') + v('a-spouse-savings');
+  const spouseTotalEl = document.getElementById('spouse-assets-total');
+  if (spouseTotalEl) spouseTotalEl.innerText = fmt(spouseTotal);
+
   // expenses
   const fields = ['e-mortgage','e-proptax','e-homeins','e-utilities','e-hoa','e-maint',
                   'e-carpay','e-gas','e-autoins','e-transport',
                   'e-food','e-dining','e-health','e-ent','e-clothing','e-travel','e-charity','e-misc'];
-  const monthly = fields.reduce((s, f) => s + v(f), 0);
+  const monthly = fields.reduce((s, f) => s + getMonthlyValue(f), 0);
   document.getElementById('sb-exp').innerText = monthly > 0 ? fmt(monthly * 12) + '/yr' : '—';
 
   const income = v('q-salary') + v('q-spouse-income');
   document.getElementById('sb-income').innerText = income > 0 ? fmt(income) + '/yr' : '—';
 
   // pension
-  const pknown = pensionMode === 'own' ? v('q-pension-known') : 0;
+  const pknown = pensionMode === 'retired' ? getRetiredPensionAnnual()
+               : pensionMode === 'own'     ? v('q-pension-known')
+               : 0;
   const mult = v('q-pension-mult') / 100 || 0.02;
   const yrs = v('q-pension-yrs') || v('q-service') || 0;
   const salary = v('q-salary-retire') || v('q-salary') || 0;
@@ -2465,16 +2703,18 @@ function updateTips() {
 // ============================
 function generateResults() {
   const age = v('q-age') || 45;
-  const retireAge = v('q-retireage') || 62;
-  const yrsToRetire = Math.max(retireAge - age, 0);
+  const retireAge = alreadyRetired ? age : (v('q-retireage') || 62);
+  const yrsToRetire = alreadyRetired ? 0 : Math.max(retireAge - age, 0);
   const currentYear = new Date().getFullYear();
-  const retireYear = currentYear + yrsToRetire;
+  const retireYear = alreadyRetired ? currentYear : currentYear + yrsToRetire;
 
   const salary = v('q-salary');
   const spouseIncome = v('q-spouse-income');
   const totalIncome = salary + spouseIncome;
 
-  const pknown = pensionMode === 'own' ? v('q-pension-known') : 0;
+  const pknown = pensionMode === 'retired' ? getRetiredPensionAnnual()
+               : pensionMode === 'own'     ? v('q-pension-known')
+               : 0;
   const mult = v('q-pension-mult') / 100 || 0.02;
   const pYrs = v('q-pension-yrs') || (v('q-service') + yrsToRetire);
   const salaryRetire = v('q-salary-retire') || salary;
@@ -2483,7 +2723,7 @@ function generateResults() {
   const expFields = ['e-mortgage','e-proptax','e-homeins','e-utilities','e-hoa','e-maint',
     'e-carpay','e-gas','e-autoins','e-transport','e-food','e-dining','e-health',
     'e-ent','e-clothing','e-travel','e-charity','e-misc'];
-  const monthlyExp = expFields.reduce((s, f) => s + v(f), 0);
+  const monthlyExp = expFields.reduce((s, f) => s + getMonthlyValue(f), 0);
   const annualExp = monthlyExp * 12;
   const retireExpPct = v('retire-spend-pct') / 100 || 0.80;
   const retireAnnualExp = annualExp * retireExpPct;
@@ -2517,7 +2757,17 @@ function generateResults() {
   const contrib457b = v('a-457b-contrib') * 12;
   const currentIRA = v('a-ira') + v('a-roth');
   const contribIRA = v('a-ira-contrib') * 12;
-  const spouseRet = v('a-spouse-ret');
+  // Spouse retirement accounts (detailed)
+  const spouse401k    = v('a-spouse-401k');
+  const spouse401kC   = v('a-spouse-401k-contrib') * 12;
+  const spouse457b    = v('a-spouse-457b');
+  const spouse457bC   = v('a-spouse-457b-contrib') * 12;
+  const spouseIRA     = v('a-spouse-ira') + v('a-spouse-roth');
+  const spouseIRAC    = v('a-spouse-ira-contrib') * 12;
+  const spouseHSA     = v('a-spouse-hsa');
+  const spouseBrok    = v('a-spouse-brokerage');
+  const spouseSav     = v('a-spouse-savings');
+  const spouseRet     = spouse401k + spouse457b + spouseIRA; // legacy total for income table
   const brokerage = v('a-brokerage');
   const savings = v('a-savings');
   const hsa = v('q-hsa-bal');
@@ -2531,11 +2781,17 @@ function generateResults() {
   const fv403b = fvGrowth(current403b, contrib403b, yrsToRetire, returnRate);
   const fv457b = fvGrowth(current457b, contrib457b, yrsToRetire, returnRate);
   const fvIRA = fvGrowth(currentIRA, contribIRA, yrsToRetire, returnRate);
-  const fvSpouseRet = fvGrowth(spouseRet, 0, yrsToRetire, returnRate);
+  const fvSpouse401k  = fvGrowth(spouse401k, spouse401kC, yrsToRetire, returnRate);
+  const fvSpouse457b  = fvGrowth(spouse457b, spouse457bC, yrsToRetire, returnRate);
+  const fvSpouseIRA   = fvGrowth(spouseIRA, spouseIRAC, yrsToRetire, returnRate);
+  const fvSpouseHSA   = fvGrowth(spouseHSA, 0, yrsToRetire, returnRate);
+  const fvSpouseBrok  = fvGrowth(spouseBrok, 0, yrsToRetire, returnRate);
+  const fvSpouseSav   = fvGrowth(spouseSav, 0, yrsToRetire, returnRate * 0.3);
+  const fvSpouseRet   = fvSpouse401k + fvSpouse457b + fvSpouseIRA; // for income table subtotal
   const fvBrokerage = fvGrowth(brokerage, 0, yrsToRetire, returnRate);
   const fvSavings = fvGrowth(savings, 0, yrsToRetire, returnRate * 0.3);
   const fvHSA = fvGrowth(hsa, v('a-hsa-contrib') * 12, yrsToRetire, returnRate);
-  const totalRetireSavings = fv403b + fv457b + fvIRA + fvSpouseRet + fvBrokerage + fvSavings + fvHSA;
+  const totalRetireSavings = fv403b + fv457b + fvIRA + fvSpouse401k + fvSpouse457b + fvSpouseIRA + fvSpouseHSA + fvSpouseBrok + fvSpouseSav + fvBrokerage + fvSavings + fvHSA;
 
   const sideIncome = v('q-side-income') * 12;
   const safeWithdrawal = totalRetireSavings * 0.04;
@@ -2553,16 +2809,17 @@ function generateResults() {
   const retireYears = lifeExp - retireAge;
   const portfolioNeeded = retireAnnualExp * 25;
 
-  document.getElementById('results-title').innerText = 'Your Retirement Readiness Report';
-  document.getElementById('results-subtitle').innerText =
-    `Planned retirement at age ${retireAge} (${retireYear}) · ${retireYears} year plan · As of ${currentYear}`;
+  document.getElementById('results-title').innerText = alreadyRetired ? 'Your Retirement Income Report' : 'Your Retirement Readiness Report';
+  document.getElementById('results-subtitle').innerText = alreadyRetired
+    ? `Currently retired · ${retireYears}-year plan remaining · As of ${currentYear}`
+    : `Planned retirement at age ${retireAge} (${retireYear}) · ${retireYears} year plan · As of ${currentYear}`;
 
   document.getElementById('print-date').innerText = 'Generated: ' + new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
   document.getElementById('ph-age').innerText      = age || '—';
   document.getElementById('ph-retire').innerText   = `Age ${retireAge} (${retireYear})`;
   document.getElementById('ph-state').innerText    = str('q-state') || '—';
   document.getElementById('ph-service').innerText  = (v('q-service') || '—') + (v('q-service') ? ' yrs' : '');
-  document.getElementById('ph-pension-src').innerText = pensionMode === 'own' ? 'State TRS / Known' : 'Built-in Estimate';
+  document.getElementById('ph-pension-src').innerText = pensionMode === 'retired' ? 'Already Retired — Exact' : pensionMode === 'own' ? 'State TRS / Known' : 'Built-in Estimate';
   document.getElementById('ph-pension').innerText  = annualPension > 0 ? fmt(annualPension) + '/yr' : '—';
 
   const printBar = document.getElementById('print-btn-bar');
@@ -2587,7 +2844,7 @@ function generateResults() {
   const spousePensionType = getRadio('rg-spouse-pension-type') || 'Public Pension';
   const rows = [];
   // Teacher income
-  if (annualPension > 0) rows.push({ source: '🏫 Your Pension', type: '<span class="badge badge-green">Guaranteed</span>', note: pensionMode === 'own' ? 'From state TRS calculator' : `${Math.round(pYrs)} yrs × ${(mult*100).toFixed(1)}%`, amount: annualPension, subtotal: false });
+  if (annualPension > 0) rows.push({ source: alreadyRetired ? '🎓 Your Pension (Current)' : '🏫 Your Pension', type: '<span class="badge badge-green">Guaranteed</span>', note: pensionMode === 'retired' ? 'Exact current pension amount' : pensionMode === 'own' ? 'From state TRS calculator' : `${Math.round(pYrs)} yrs × ${(mult*100).toFixed(1)}%`, amount: annualPension, subtotal: false });
   if (teacherSSAnnual > 0) rows.push({ source: '🏛️ Your Social Security', type: '<span class="badge badge-blue">Social Security</span>', note: 'WEP repealed (SSFA 2025)', amount: teacherSSAnnual, subtotal: false });
   if (divorcedWidowSSAnnual > 0) {
     const marStatus = getRadio('rg-married');
@@ -2601,7 +2858,12 @@ function generateResults() {
   if (spouseSSAnnual > 0) rows.push({ source: '👫 Spouse Social Security', type: '<span class="badge badge-blue">Social Security</span>', note: spouseClaim.includes('70') ? 'Delayed to 70 — Max!' : spouseClaim.includes('62') ? 'Early claim — reduced' : 'FRA claim', amount: spouseSSAnnual, subtotal: false });
   if (spousePensionAnnual > 0 || spouseSSAnnual > 0) rows.push({ source: '<strong>📊 Spouse Total Income</strong>', type: '', note: '', amount: spouseTotalIncome, subtotal: true });
   // Shared
-  if (safeWithdrawal > 0) rows.push({ source: '📈 Portfolio Withdrawal (4%)', type: '<span class="badge badge-amber">Invested</span>', note: `From ${fmtK(totalRetireSavings)} savings`, amount: safeWithdrawal, subtotal: false });
+  const teacherPortfolio = fv403b + fv457b + fvIRA + fvBrokerage + fvSavings + fvHSA;
+  const spousePortfolioTotal = fvSpouse401k + fvSpouse457b + fvSpouseIRA + fvSpouseHSA + fvSpouseBrok + fvSpouseSav;
+  const portfolioNote = spousePortfolioTotal > 0
+    ? `Teacher: ${fmtK(teacherPortfolio)} · Spouse: ${fmtK(spousePortfolioTotal)}`
+    : `From ${fmtK(totalRetireSavings)} savings`;
+  if (safeWithdrawal > 0) rows.push({ source: '📈 Combined Portfolio Withdrawal (4%)', type: '<span class="badge badge-amber">Invested</span>', note: portfolioNote, amount: safeWithdrawal, subtotal: false });
   if (sideIncome > 0) rows.push({ source: '💼 Side Income', type: '<span class="badge badge-amber">Variable</span>', note: 'Part-time / rental', amount: sideIncome, subtotal: false });
   rows.push({ source: '<strong>🏠 Total Household Income</strong>', type: '', note: '', amount: totalRetireIncome, total: true });
 
@@ -2840,7 +3102,12 @@ function generateResults() {
     { name: '403(b)', current: current403b, future: fv403b },
     { name: '457(b)', current: current457b, future: fv457b },
     { name: 'IRA / Roth IRA', current: currentIRA, future: fvIRA },
-    { name: "Spouse's Retirement", current: spouseRet, future: fvSpouseRet },
+    { name: "Spouse 401(k)/403(b)", current: spouse401k, future: fvSpouse401k },
+    { name: "Spouse 457(b)", current: spouse457b, future: fvSpouse457b },
+    { name: "Spouse IRA / Roth IRA", current: spouseIRA, future: fvSpouseIRA },
+    { name: "Spouse HSA", current: spouseHSA, future: fvSpouseHSA },
+    { name: "Spouse Brokerage", current: spouseBrok, future: fvSpouseBrok },
+    { name: "Spouse Savings", current: spouseSav, future: fvSpouseSav },
     { name: 'Brokerage / Taxable', current: brokerage, future: fvBrokerage },
     { name: 'Savings / Cash', current: savings, future: fvSavings },
     { name: 'HSA', current: hsa, future: fvHSA },
@@ -2865,6 +3132,77 @@ function generateResults() {
     * Projection assumes ${Math.round(returnRate*100)}% average annual return with continued contributions until retirement at age ${retireAge}. 
     Inflation adjusted real return: ${Math.round(realReturn*100)}%.
   </p>`;
+
+  // ── Spouse Assets Report Section ──────────────────────────────
+  const spouseCurrentTotal = spouse401k + spouse457b + spouseIRA + spouseHSA + spouseBrok + spouseSav;
+  const spouseFutureTotal  = fvSpouse401k + fvSpouse457b + fvSpouseIRA + fvSpouseHSA + fvSpouseBrok + fvSpouseSav;
+  const spouseAssetsSection = document.getElementById('spouse-assets-report-section');
+  const spouseAssetsBox     = document.getElementById('spouse-assets-report-box');
+
+  if (spouseCurrentTotal > 0 || spouseFutureTotal > 0) {
+    spouseAssetsSection.style.display = '';
+    const spouseRows = [
+      { name: '401(k) / 403(b)', current: spouse401k, future: fvSpouse401k, contrib: v('a-spouse-401k-contrib') * 12 },
+      { name: '457(b) / Deferred Comp', current: spouse457b, future: fvSpouse457b, contrib: v('a-spouse-457b-contrib') * 12 },
+      { name: 'IRA / Roth IRA', current: spouseIRA, future: fvSpouseIRA, contrib: v('a-spouse-ira-contrib') * 12 },
+      { name: 'HSA', current: spouseHSA, future: fvSpouseHSA, contrib: 0 },
+      { name: 'Taxable Brokerage', current: spouseBrok, future: fvSpouseBrok, contrib: 0 },
+      { name: 'Savings / Checking', current: spouseSav, future: fvSpouseSav, contrib: 0 },
+    ].filter(r => r.current > 0 || r.future > 0);
+
+    spouseAssetsBox.innerHTML = `
+    <div style="background:linear-gradient(135deg,rgba(42,157,143,0.07),rgba(201,168,76,0.04));border:1px solid rgba(42,157,143,0.2);border-radius:12px;padding:14px 18px;margin-bottom:14px;font-size:0.83rem;color:var(--slate);line-height:1.6">
+      Your spouse's assets grow alongside yours in the household portfolio. The table below shows their accounts individually so you can track each one — all figures are included in the combined household totals above.
+    </div>
+    <table class="income-table">
+      <thead>
+        <tr>
+          <th>Spouse Account</th>
+          <th>Current Balance</th>
+          <th>Annual Contribution</th>
+          <th>Projected Growth</th>
+          <th>At Retirement (${retireYear})</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${spouseRows.map(r => `<tr>
+          <td>👫 ${r.name}</td>
+          <td style="font-family:var(--font-mono);font-size:0.85rem">${fmt(r.current)}</td>
+          <td style="font-family:var(--font-mono);font-size:0.85rem;color:var(--slate)">${r.contrib > 0 ? fmt(r.contrib) + '/yr' : '—'}</td>
+          <td style="color:var(--green);font-size:0.82rem">+${fmt(r.future - r.current)}</td>
+          <td style="font-weight:600">${fmt(r.future)}</td>
+        </tr>`).join('')}
+        <tr style="background:rgba(42,157,143,0.06)">
+          <td><strong>👫 Spouse Portfolio Total</strong></td>
+          <td style="font-family:var(--font-mono)"><strong>${fmt(spouseCurrentTotal)}</strong></td>
+          <td style="font-family:var(--font-mono);color:var(--slate)"><strong>${fmt((v('a-spouse-401k-contrib') + v('a-spouse-457b-contrib') + v('a-spouse-ira-contrib')) * 12)}/yr</strong></td>
+          <td></td>
+          <td style="color:var(--teal);font-size:1rem"><strong>${fmt(spouseFutureTotal)}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+      <div style="background:var(--surface);border-radius:10px;padding:12px 14px;border:1px solid var(--border);text-align:center">
+        <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px;font-family:var(--font-mono)">Spouse Current Total</div>
+        <div style="font-size:1.3rem;font-weight:700;color:var(--ink);font-family:var(--font-display)">${fmtK(spouseCurrentTotal)}</div>
+      </div>
+      <div style="background:var(--surface);border-radius:10px;padding:12px 14px;border:1px solid var(--border);text-align:center">
+        <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px;font-family:var(--font-mono)">Spouse Portfolio at Retirement</div>
+        <div style="font-size:1.3rem;font-weight:700;color:var(--teal);font-family:var(--font-display)">${fmtK(spouseFutureTotal)}</div>
+      </div>
+      <div style="background:var(--surface);border-radius:10px;padding:12px 14px;border:1px solid var(--border);text-align:center">
+        <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px;font-family:var(--font-mono)">Spouse 4% Annual Withdrawal</div>
+        <div style="font-size:1.3rem;font-weight:700;color:var(--gold);font-family:var(--font-display)">${fmtK(spouseFutureTotal * 0.04)}</div>
+      </div>
+    </div>
+    <p style="margin-top:10px;font-size:0.78rem;color:var(--muted)">
+      * Projection assumes ${Math.round(returnRate*100)}% average annual return with continued contributions until retirement at age ${retireAge}.
+      Spouse accounts are included in the combined household portfolio and all surplus/gap calculations.
+    </p>`;
+  } else {
+    spouseAssetsSection.style.display = 'none';
+  }
+  // ──────────────────────────────────────────────────────────────
 
   showScenario(document.querySelector('.scenario-tab.active'), 'early');
   generateScenario('early');
